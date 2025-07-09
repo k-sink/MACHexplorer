@@ -1,3 +1,14 @@
+# Load required libraries
+library(shiny)
+library(bslib)
+library(shinyjs)
+library(duckdb)
+library(dplyr)
+library(DBI)
+library(dbplyr)
+
+
+
 ###################################
 ### GLOBAL FUNCTIONS ###
 ###################################
