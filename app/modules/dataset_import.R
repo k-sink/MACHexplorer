@@ -1,7 +1,7 @@
 ###################################
 ### DATASET IMPORT MODULE ###
 ###################################
-datasetImportUI <- function(id) {
+dataset_import_ui <- function(id) {
   ns <- NS(id)
   tagList(
     br(),
@@ -10,10 +10,11 @@ datasetImportUI <- function(id) {
         width = 12,
         wellPanel(
           h6(strong("WELCOME TO MACH EXPLORER")),
-          p("This app allows users to navigate and manipulate the MACH dataset, 
+          p("MACH Explorer allows users to navigate and manipulate the MACH dataset, 
             which contains daily climate and streamflow data along with catchment 
-            attributes for 1,014 watersheds within the United States. 
-            All tabs retrieve data based on the sites selected on the 'Site Selection' tab.")
+            attributes for 1,014 watersheds within the United States. The dataset in its entirety, as individual CSV files,
+            is available for download from zenodo. This app uses a consolidated database management system called DuckDB."), 
+           p("Please note that all tabs in this application retrieve data based on the sites selected on the 'Site Selection' tab.")
         )
       )
     ),
@@ -22,16 +23,21 @@ datasetImportUI <- function(id) {
       column(
         width = 12,
         wellPanel(
-          h6(strong("DATA IMPORT")),
-          p("Select the 'full_dataset.duckdb' file to connect to the database. 
-            Download it from the GitHub repository if you haven't already: ",
-            tags$a(href="https://github.com/k-sink/MACHexplorer/releases", target="_blank", "GitHub Releases")),
+          h6(strong("DATABASE IMPORT")),
+     p("1. To get started, you'll need the ", strong("'full_dataset.duckdb'"), "database file.",
+        "If you have not downloaded the file yet, you can get it from the ",
+        tags$a(href = "https://github.com/k-sink/MACHexplorer/releases", target = "_blank", "GitHub Releases page"), ".", 
+       "Make sure to maintain the original database file name."), 
+      p( "2. Click the ", strong("Browse"), " button to find and connect to the database file on your computer. ",
+       "While the MACH Explorer app is connecting to the database, a status bar will be displayed, letting you know it's working. "),
+  
           fileInput(
             ns("db_file"),
-            label = "Choose MACH Dataset (full_dataset.duckdb)",
+            label = "Choose MACH database file (full_dataset.duckdb)",
             accept = ".duckdb",
             buttonLabel = HTML('<i class="fa-solid fa-folder-open"></i> Browse')
           ),
+          p("Please wait until you see the green 'Connected to database' message below before proceeding."),
           uiOutput(ns("connection_status"))
         )
       )
@@ -39,7 +45,7 @@ datasetImportUI <- function(id) {
   )
 }
 
-datasetImportServer <- function(id, shared_data) {
+dataset_import_server <- function(id, shared_data) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
@@ -98,7 +104,8 @@ datasetImportServer <- function(id, shared_data) {
         con <- DBI::dbConnect(duckdb::duckdb(), dbdir = input$db_file$datapath, read_only = TRUE)
         
         # Check for required tables
-        required_tables <- c("mach_daily", "mopex_daily", "land_cover", "site_info")
+        required_tables <- c("mach_daily", "mopex_daily", "site_info", "anthropogenic", "annual_climate", 
+        "geology", "hydrology", "land_cover", "monthly_climate", "overall_climate", "regional", "soil")
         actual_tables <- DBI::dbListTables(con)
         missing_tables <- setdiff(required_tables, actual_tables)
         

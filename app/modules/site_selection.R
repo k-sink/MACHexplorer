@@ -1,7 +1,7 @@
 ###################################
 ### SITE SELECTION MODULE ###
 ###################################
-siteSelectionUI = function(id) {
+site_selection_ui = function(id) {
   ns = NS(id)
   tagList(
     
@@ -50,12 +50,12 @@ siteSelectionUI = function(id) {
       column(width = 5,
         br(),
         wellPanel(h6(strong("Stream Discharge Record")), br(),
-          withSpinner(DTOutput(ns("discharge_days")), type = 6))),
+          withSpinner(DT::DTOutput(ns("discharge_days")), type = 6))),
      
        column(width = 7,
         br(),
         wellPanel(h6(strong("Selected Stream Gauging Sites")), br(),
-          withSpinner(DTOutput(ns("gauges")), type = 6)))
+          withSpinner(DT::DTOutput(ns("gauges")), type = 6)))
     )
   )
 }
@@ -63,20 +63,56 @@ siteSelectionUI = function(id) {
 ###################################################
 ### SERVER ###
 ###################################################
-### SERVER ###
-### SERVER ###
-siteSelectionServer <- function(id, shared_data) {
+site_selection_server <- function(id, shared_data) {
   moduleServer(id, function(input, output, session) {
-    ns = session$ns
+    ns <- session$ns
 
-    observe({
-      req(shared_data$site_attributes)
-      updateSelectizeInput(session, "state1", choices = sort(unique(shared_data$site_attributes$state)))
+    # load the basin shapefile from .qs format
+    basins_shp <- reactive({
+      tryCatch({
+        qs::qread("data/MACH_basins.qs")
+      }, error = function(e) {
+        showNotification(paste("Error loading discharge_mach.qs:", e$message), type = "error")
+        NULL
+      })
     })
 
-    manual_edit <- reactive({
-      req(shared_data$site_attributes)
-      siteinfo <- shared_data$site_attributes
+    discharge_count <- reactive({
+      tryCatch({
+        qs::qread("data/discharge_mach.qs")
+      }, error = function(e) {
+        showNotification(paste("Error loading discharge_mach.qs:", e$message), type = "error")
+        NULL
+      })
+    })
+
+    # reactive to fetch site_info table from DuckDB
+    site_info <- reactive({
+      req(shared_data$database_ready, shared_data$duckdb_connection)
+      tryCatch({
+        dplyr::tbl(shared_data$duckdb_connection, "site_info") %>%
+          dplyr::filter(SITENO %in% shared_data$mach_ids) %>%
+          dplyr::select(
+            SITENO, station_name, state, dec_lat_va, dec_long_va,
+            elev_mean, NHD_drain_area_sqkm, basin_slope
+          ) %>%
+          collect()
+      }, error = function(e) {
+        showNotification(paste("Error loading site_info:", e$message), type = "error")
+        data.frame()
+      })
+    })
+
+    # update state choices
+    observe({
+      req(site_info())
+      updateSelectizeInput(session, "state1", choices = sort(unique(site_info()$state)))
+    })
+
+    # Reactive for filtered sites
+    filtered_sites <- reactive({
+      req(site_info())
+      siteinfo <- site_info()
       if (!is.null(input$state1) && length(input$state1) > 0) {
         siteinfo <- siteinfo %>% dplyr::filter(state %in% input$state1)
       }
@@ -96,7 +132,7 @@ siteSelectionServer <- function(id, shared_data) {
         siteinfo <- siteinfo %>% dplyr::filter(basin_slope >= input$slope1[1], basin_slope <= input$slope1[2])
       }
       siteinfo %>% dplyr::select(
-        SITENO = SITENO,
+        SITENO,
         NAME = station_name,
         STATE = state,
         LAT = dec_lat_va,
@@ -107,22 +143,28 @@ siteSelectionServer <- function(id, shared_data) {
       )
     }) %>% debounce(500)
 
+    # Initialize selected sites
+    selected_sites <- reactiveVal()
     observe({
-      shared_data$site <- manual_edit()
+      req(filtered_sites())
+      selected_sites(filtered_sites())
+      # Update shared_data$selected_sites
+      shared_data$selected_sites <- filtered_sites()$SITENO
     })
 
+    # Manual site addition
     observeEvent(input$add_site_btn, {
-      req(input$add_site_no, shared_data$mach_ids)
+      req(input$add_site_no, shared_data$mach_ids, site_info())
       new_site_no <- stringr::str_pad(input$add_site_no, 8, pad = "0")
       if (!new_site_no %in% shared_data$mach_ids) {
         showNotification("Invalid site number. Site not found in MACH database.", type = "error")
         updateTextInput(session, "add_site_no", value = "")
         return()
       }
-      new_site <- shared_data$site_attributes %>% 
+      new_site <- site_info() %>%
         dplyr::filter(SITENO == new_site_no) %>%
         dplyr::select(
-          SITENO = SITENO,
+          SITENO,
           NAME = station_name,
           STATE = state,
           LAT = dec_lat_va,
@@ -132,8 +174,10 @@ siteSelectionServer <- function(id, shared_data) {
           SLOPE = basin_slope
         )
       if (nrow(new_site) > 0) {
-        if (!new_site_no %in% shared_data$site$SITENO) {
-          shared_data$site <- rbind(shared_data$site, new_site)
+        current <- selected_sites()
+        if (!new_site_no %in% current$SITENO) {
+          selected_sites(rbind(current, new_site))
+          shared_data$selected_sites <- c(shared_data$selected_sites, new_site_no)
           showNotification(paste("Site", input$add_site_no, "added successfully!"), type = "message")
         } else {
           showNotification("Site already selected.", type = "warning")
@@ -144,11 +188,14 @@ siteSelectionServer <- function(id, shared_data) {
       updateTextInput(session, "add_site_no", value = "")
     })
 
+    # Manual site removal
     observeEvent(input$remove_site_btn, {
       req(input$remove_site_no)
       remove_site_no <- stringr::str_pad(input$remove_site_no, 8, pad = "0")
-      if (remove_site_no %in% shared_data$site$SITENO) {
-        shared_data$site <- shared_data$site %>% dplyr::filter(SITENO != remove_site_no)
+      current <- selected_sites()
+      if (remove_site_no %in% current$SITENO) {
+        selected_sites(current %>% dplyr::filter(SITENO != remove_site_no))
+        shared_data$selected_sites <- current$SITENO[current$SITENO != remove_site_no]
         showNotification(paste("Site", input$remove_site_no, "removed successfully!"), type = "message")
       } else {
         showNotification("Site number not found in the current table.", type = "error")
@@ -156,14 +203,18 @@ siteSelectionServer <- function(id, shared_data) {
       updateTextInput(session, "remove_site_no", value = "")
     })
 
+    # Remove all sites
     observeEvent(input$remove_site_all, {
-      shared_data$site <- shared_data$site_attributes[0, ] %>% dplyr::select(
-        SITENO, NAME = station_name, STATE = state, LAT = dec_lat_va, LONG = dec_long_va,
-        ELEV = elev_mean, AREA = NHD_drain_area_sqkm, SLOPE = basin_slope
-      )
+      selected_sites(data.frame(
+        SITENO = character(), NAME = character(), STATE = character(),
+        LAT = numeric(), LONG = numeric(), ELEV = numeric(),
+        AREA = numeric(), SLOPE = numeric()
+      ))
+      shared_data$selected_sites <- character(0)
       showNotification("All sites removed successfully!", type = "message")
     })
 
+    # Reset filters
     observeEvent(input$reset, {
       updateSelectizeInput(session, "state1", selected = "")
       updateCheckboxInput(session, "latitude", value = FALSE)
@@ -176,95 +227,134 @@ siteSelectionServer <- function(id, shared_data) {
       updateSliderInput(session, "area1", value = c(2, 26000))
       updateCheckboxInput(session, "slope", value = FALSE)
       updateSliderInput(session, "slope1", value = c(0, 70))
-      shared_data$site <- shared_data$site_attributes %>% 
-        dplyr::filter(SITENO %in% shared_data$mach_ids) %>% 
+      selected_sites(site_info() %>%
+        dplyr::filter(SITENO %in% shared_data$mach_ids) %>%
         dplyr::select(
-          SITENO, NAME = station_name, STATE = state, LAT = dec_lat_va, LONG = dec_long_va,
-          ELEV = elev_mean, AREA = NHD_drain_area_sqkm, SLOPE = basin_slope
+          SITENO,
+          NAME = station_name,
+          STATE = state,
+          LAT = dec_lat_va,
+          LONG = dec_long_va,
+          ELEV = elev_mean,
+          AREA = NHD_drain_area_sqkm,
+          SLOPE = basin_slope
+        ))
+      shared_data$selected_sites <- site_info()$SITENO[site_info()$SITENO %in% shared_data$mach_ids]
+    })
+
+    # Render gauges table
+    output$gauges <- DT::renderDT({
+      req(selected_sites())
+      data <- selected_sites()
+      if (nrow(data) == 0) {
+        DT::datatable(
+          data.frame(Message = "No sites selected"),
+          options = list(pageLength = 10, scrollX = TRUE, dom = "t"),
+          class = "display responsive nowrap"
         )
+      } else {
+        DT::datatable(
+          data,
+          options = list(
+            pageLength = 10,
+            scrollX = TRUE,
+            lengthMenu = c(5, 10, 20, 50),
+            dom = "Blfrtip",
+            paging = TRUE,
+            server = FALSE
+          ),
+          class = "display responsive nowrap"
+        ) %>% DT::formatRound(columns = c("LAT", "LONG", "ELEV", "AREA", "SLOPE"), digits = 2)
+      }
+    }, server = FALSE)
+
+    
+    # Reactive to fetch discharge_count data
+    discharge_data <- reactive({
+      req(discharge_count(), selected_sites())
+      site_ids <- selected_sites()$SITENO
+      if (length(site_ids) == 0) {
+        return(data.frame(SITENO = character()))
+      }
+      tryCatch({
+        discharge_count() %>%
+          dplyr::filter(SITENO %in% site_ids)
+      }, error = function(e) {
+        showNotification(paste("Error processing discharge_count:", e$message), type = "error")
+        data.frame(SITENO = character())
+      })
     })
 
-    output$gauges <- renderDT({
-      data <- shared_data$site
+    # Render discharge_days table
+    output$discharge_days <- DT::renderDT({
+      req(discharge_data())
+      data <- discharge_data()
       if (nrow(data) == 0) {
-        return(DT::datatable(
+        DT::datatable(
           data.frame(Message = "No sites selected"),
           options = list(pageLength = 10, scrollX = TRUE, dom = "t"),
           class = "display responsive nowrap"
-        ))
-      }
-      DT::datatable(
-        data,
-        options = list(
-          pageLength = 10,
-          scrollX = TRUE,
-          lengthMenu = c(5, 10, 20, 50),
-          dom = "Blfrtip",
-          paging = TRUE,
-          server = TRUE
-        ),
-        class = "display responsive nowrap"
-      ) %>% DT::formatRound(columns = c("LAT", "LONG", "ELEV", "AREA", "SLOPE"), digits = 2)
-    })
-
-    output$discharge_days <- renderDT({
-      data <- shared_data$discharge_count %>% dplyr::filter(SITENO %in% shared_data$site$SITENO)
-      if (nrow(data) == 0) {
-        return(DT::datatable(
-          data.frame(Message = "No sites selected"),
-          options = list(pageLength = 10, scrollX = TRUE, dom = "t"),
+        )
+      } else {
+        DT::datatable(
+          data,
+          options = list(
+            pageLength = 10,
+            scrollX = TRUE,
+            lengthMenu = c(5, 10, 20, 50),
+            dom = "Blfrtip",
+            paging = TRUE,
+            server = FALSE
+          ),
           class = "display responsive nowrap"
-        ))
+        )
       }
-      DT::datatable(
-        data,
-        options = list(
-          pageLength = 10,
-          scrollX = TRUE,
-          lengthMenu = c(5, 10, 20, 50),
-          dom = "Blfrtip",
-          paging = TRUE,
-          server = TRUE
-        ),
-        class = "display responsive nowrap"
-      )
-    })
+    }, server = FALSE)
+    
 
+
+    # Render Leaflet map
     output$my_leaflet <- renderLeaflet({
-      req(shared_data$basins_shp, shared_data$site)
       leaflet() %>%
         setView(lng = -99, lat = 40, zoom = 4) %>%
         addTiles(group = "OpenStreetMap", options = tileOptions(maxZoom = 18)) %>%
         addProviderTiles(providers$Esri.WorldTopoMap, group = "EsriTopo", options = tileOptions(maxZoom = 18)) %>%
-        addCircleMarkers(
-          data = shared_data$site,
-          lng = ~LONG,
-          lat = ~LAT,
-          radius = 3,
-          color = "blue",
-          popup = ~paste0(
-            "Gauge ID: ", SITENO, "<br>",
-            "Gauge Name: ", NAME, "<br>",
-            "Latitude: ", LAT, "<br>",
-            "Longitude: ", LONG
-          )
-        ) %>%
-        addPolygons(
-          data = shared_data$basins_shp,
-          color = "black",
-          fillColor = "white",
-          weight = 1,
-          opacity = 0.7,
-          fillOpacity = 0.2,
-          group = "Basin Delineations"
-        ) %>%
         addLayersControl(
           baseGroups = c("OpenStreetMap", "EsriTopo"),
           overlayGroups = c("Basin Delineations"),
           options = layersControlOptions(collapsed = FALSE)
         ) %>%
-        hideGroup("Basin Delineations") %>%
-        setMaxBounds(lng1 = -125, lat1 = 25, lng2 = -65, lat2 = 50)
+        setMaxBounds(lng1 = -125, lat1 = 25, lng2 = -65, lat2 = 50) %>%
+        { if (!is.null(basins_shp())) {
+            addPolygons(
+              .,
+              data = basins_shp(),
+              color = "black",
+              fillColor = "white",
+              weight = 1,
+              opacity = 0.7,
+              fillOpacity = 0.2,
+              group = "Basin Delineations"
+            ) %>% hideGroup("Basin Delineations")
+          } else . } %>%
+        { if (nrow(selected_sites()) > 0) {
+            addCircleMarkers(
+              .,
+              data = selected_sites(),
+              lng = ~LONG,
+              lat = ~LAT,
+              radius = 3,
+              color = "blue",
+              popup = ~paste0(
+                "Gauge ID: ", SITENO, "<br>",
+                "Gauge Name: ", NAME, "<br>",
+                "Latitude: ", LAT, "<br>",
+                "Longitude: ", LONG
+              )
+            )
+          } else . }
     })
+    
+ 
   })
 }

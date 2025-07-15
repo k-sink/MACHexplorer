@@ -1,24 +1,36 @@
-# Source global configuration
+###################################
+### MACH EXPLORER APP ###
+###################################
+# source global configuration file
 source("global.R")
 
-# Source all modules
+# source all modules
 source("modules/dataset_import.R")
-# Add other module sources here as needed (e.g., source("modules/site_selection.R"))
+source("modules/site_selection.R")
+source("modules/daily_data.R")
+source("modules/monthly_data.R")
 
-# Increase file upload size limit to 1GB
+
+# increase file upload size limit to 1GB to allow for 900MB duckdb
 options(shiny.maxRequestSize = 1000 * 1024^2)
 
+# ui setup
 ui <- fluidPage(
-  # Add custom CSS for resizing
+  
+  # add custom CSS for universal wellPanel and DataTables sizing
   tags$head(tags$style(HTML("
     .well { 
-      min-height: 100px; 
       height: auto !important; 
+      min-height: 100px;
       overflow: hidden; 
     }
     .dataTables_scroll {
       max-height: 70vh !important;
       overflow-y: auto !important;
+    }
+    .dataTables_scroll:empty {
+      max-height: 0px !important;
+      overflow: hidden !important;
     }
     .dataTables_paginate { 
       margin-top: 10px !important; 
@@ -26,45 +38,89 @@ ui <- fluidPage(
     .dataTables_info { 
       margin-top: 10px !important; 
     }
+    .nav-tabs > li > a.disabled {
+      pointer-events: none;
+      color: #aaa;
+      cursor: not-allowed;
+    }
   "))),
   
-  # Bootstrap CSS framework
+  # bootstrap CSS framework
   theme = bslib::bs_theme(bootswatch = "lumen"),
   
-  # Implement shinyjs features
+  # implement shinyjs features
   shinyjs::useShinyjs(),
   
   titlePanel("MACH Explorer"),
   
-  # Create tabs
+  # create tabs
   tabsetPanel(
-    tabPanel("Data Import", datasetImportUI("dataset_import")),
-    tabPanel("Site Selection", "Site selection content here"),
-    tabPanel("Daily Data", "Daily data content here"),
-    tabPanel("Monthly Data", "Monthly data content here"),
+    id = "main_tabs",
+    tabPanel("Data Import", dataset_import_ui("dataset_import")),
+    tabPanel("Site Selection", site_selection_ui("site_selection")),
+    tabPanel("Daily Data", daily_data_ui("daily_data")),
+    tabPanel("Monthly Data", monthly_data_ui("monthly_data")),
     tabPanel("Annual Data", "Annual data content here")
   )
 )
 
+# server setup 
 server <- function(input, output, session) {
-  # Initialize shared data
+ 
+   # initialize shared data for all tabs
   shared_data <- reactiveValues(
     database_ready = FALSE,
     mach_ids = character(0),
-    duckdb_connection = NULL
+    duckdb_connection = NULL, 
+    selected_sites = character(0)
+   
   )
   
-  # Call module servers
-  datasetImportServer("dataset_import", shared_data)
-  # Add other module servers here as needed
+  # call module servers
+  dataset_import_server("dataset_import", shared_data)
+  site_selection_server("site_selection", shared_data)
+  daily_data_server("daily_data", shared_data)
+  monthly_data_server("monthly_data", shared_data)
   
-  # Ensure database connection is closed on session end
+  # disable tabs until database is connected
+  observe({
+    if (!shared_data$database_ready) {
+      shinyjs::disable(selector = "#main_tabs li a[data-value='site_selection']")
+      shinyjs::disable(selector = "#main_tabs li a[data-value='daily_data']")
+      shinyjs::disable(selector = "#main_tabs li a[data-value='monthly_data']")
+      shinyjs::disable(selector = "#main_tabs li a[data-value='annual_data']")
+    } else {
+      shinyjs::enable(selector = "#main_tabs li a[data-value='site_selection']")
+      shinyjs::enable(selector = "#main_tabs li a[data-value='daily_data']")
+      shinyjs::enable(selector = "#main_tabs li a[data-value='monthly_data']")
+      shinyjs::enable(selector = "#main_tabs li a[data-value='annual_data']")
+    }
+  })
+
+  # show popup if user tries to switch tabs without connection
+  observeEvent(input$main_tabs, {
+    if (!shared_data$database_ready && input$main_tabs != "Data Import") {
+      shinyalert("I feel disconnected.", "Please connect to the database file before using other tabs.", type = "error")
+      updateTabsetPanel(session, "main_tabs", selected = "Data Import")
+    }
+  })
+  
+  
+  # ensure database connection is closed on session end
   onSessionEnded(function() {
     if (!is.null(isolate(shared_data$duckdb_connection)) && DBI::dbIsValid(isolate(shared_data$duckdb_connection))) {
       DBI::dbDisconnect(isolate(shared_data$duckdb_connection), shutdown = TRUE)
       message("DuckDB connection closed on session end")
     }
   })
+  
+  # close app when session completes
+  if (!interactive()) {
+    session$onSessionEnded(function() {
+      stopApp()
+      q("no")
+    })
+  }
 }
 
 # Run the app
