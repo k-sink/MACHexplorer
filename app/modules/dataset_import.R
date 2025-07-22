@@ -4,46 +4,53 @@
 dataset_import_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    br(),
     fluidRow(
-      column(
-        width = 12,
-        wellPanel(
-          h6(strong("WELCOME TO MACH EXPLORER")),
-          p("MACH Explorer allows users to navigate and manipulate the MACH dataset, 
-            which contains daily climate and streamflow data along with catchment 
-            attributes for 1,014 watersheds within the United States. The dataset in its entirety, as individual CSV files,
-            is available for download from zenodo. This app uses a consolidated database management system called DuckDB."), 
-           p("Please note that all tabs in this application retrieve data based on the sites selected on the 'Site Selection' tab.")
+      column(width = 12,
+        card(
+          card_header("Welcome to MACH Explorer"),
+          card_body(
+            p("MACH Explorer allows users to navigate and manipulate the MACH dataset, 
+              which contains daily climate and streamflow data along with catchment 
+              attributes for 1,014 watersheds within the United States. The dataset in its entirety, as individual CSV files,
+              is available for download from zenodo. This app uses a consolidated database management system called DuckDB."),
+            p("Please note that all tabs in this application retrieve data based on the sites selected on the 'Site Selection' tab.")
+          )
         )
       )
     ),
-    br(),
     fluidRow(
-      column(
-        width = 12,
-        wellPanel(
-          h6(strong("DATABASE IMPORT")),
-     p("1. To get started, you'll need the ", strong("'full_dataset.duckdb'"), "database file.",
-        "If you have not downloaded the file yet, you can get it from the ",
-        tags$a(href = "https://github.com/k-sink/MACHexplorer/releases", target = "_blank", "GitHub Releases page"), ".", 
-       "Make sure to maintain the original database file name."), 
-      p( "2. Click the ", strong("Browse"), " button to find and connect to the database file on your computer. ",
-       "While the MACH Explorer app is connecting to the database, a status bar will be displayed, letting you know it's working. "),
-  
-          fileInput(
-            ns("db_file"),
-            label = "Choose MACH database file (full_dataset.duckdb)",
-            accept = ".duckdb",
-            buttonLabel = HTML('<i class="fa-solid fa-folder-open"></i> Browse')
-          ),
-          p("Please wait until you see the green 'Connected to database' message below before proceeding."),
-          uiOutput(ns("connection_status"))
+      column(width = 12,
+        card(
+          card_header("Database Import"),
+          card_body(
+            p("1. To get started, you'll need the ",  
+              tags$span("full_dataset.duckdb", style = "color: #593196;"), 
+              "database file. ",
+              "If you have not downloaded the file yet, you can get it from the ",
+              tags$a(href = "https://github.com/k-sink/MACHexplorer/releases", target = "_blank", "GitHub Releases page"), ". ",
+              "Make sure to maintain the original database file name."),
+            p("2. Click the ", 
+               tags$span("Browse", style = "color: #593196;"), 
+              " button to find and connect to the database file on your computer. ",
+              "While the MACH Explorer app is connecting to the database, a status bar will be displayed."),
+            fileInput(
+              ns("db_file"),
+              label = "Choose MACH database file (full_dataset.duckdb)",
+              accept = ".duckdb",
+              buttonLabel = HTML('<i class="fa-solid fa-folder-open"></i> Browse'),
+              width = "100%"
+            ),
+            p("Please wait until you see the green 'Connected to database' message below before proceeding. All tabs are 
+              disabled prior to an established connection."),
+              uiOutput(ns("connection_status"))
+          )
         )
       )
     )
   )
 }
+
+
 
 dataset_import_server <- function(id, shared_data) {
   moduleServer(id, function(input, output, session) {

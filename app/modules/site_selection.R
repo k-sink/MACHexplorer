@@ -1,68 +1,85 @@
 ###################################
 ### SITE SELECTION MODULE ###
 ###################################
-site_selection_ui = function(id) {
-  ns = NS(id)
+site_selection_ui <- function(id) {
+  ns <- NS(id)
+
   tagList(
-    
     fluidRow(
-      
-      column(width = 7,
-        wellPanel(h6(strong("USGS Stream Gauging Site Locations")), br(), 
-          withSpinner(leafletOutput(ns("my_leaflet"), height = 500), type = 6))),
-      
-      column(width = 3,
-        wellPanel(style = "overflow: visible; height: auto;",
-          h6(strong("Filter Sites")), br(), 
-          selectizeInput(ns("state1"), "State",
-            choices = NULL, multiple = TRUE,
-            options = list(placeholder = "Select one or more states")),
-          checkboxInput(ns("latitude"), HTML("Latitude (°N)"), FALSE),
-          conditionalPanel(condition = "input.latitude == true", ns = ns,
-            sliderInput(ns("latitude1"), NULL, min = 25, max = 50, value = c(25, 50), ticks = FALSE)),
-          checkboxInput(ns("longitude"), HTML("Longitude (°W)"), FALSE),
-          conditionalPanel(condition = "input.longitude == true", ns = ns,
-            sliderInput(ns("longitude1"), NULL, min = -125, max = -65, value = c(-125, -65), ticks = FALSE)),
-          checkboxInput(ns("elevation"), "Mean Elevation (m)", FALSE),
-          conditionalPanel(condition = "input.elevation == true", ns = ns,
-            sliderInput(ns("elevation1"), NULL, min = 5, max = 3605, value = c(5, 3605), ticks = FALSE)),
-          checkboxInput(ns("area"), HTML("Drainage Area (km<sup>2</sup>)"), FALSE),
-          conditionalPanel(condition = "input.area == true", ns = ns,
-            sliderInput(ns("area1"), NULL, min = 2, max = 26000, value = c(2, 26000), ticks = FALSE)),
-          checkboxInput(ns("slope"), "Mean Slope (percent)", FALSE),
-          conditionalPanel(condition = "input.slope == true", ns = ns,
-            sliderInput(ns("slope1"), NULL, min = 0, max = 70, value = c(0, 70), ticks = FALSE)),
-          br(),
-          actionButton(ns("reset"), "Reset Filters"))),
-      
-      column(width = 2,
-        wellPanel(h6(strong("Edit Site Selections")), br(), 
-          textInput(ns("add_site_no"), "Manually Add Site", placeholder = "Enter 8-digit SITENO"),
-          actionButton(ns("add_site_btn"), "Add Site"),
-          br(), br(),
-          textInput(ns("remove_site_no"), "Manually Remove Site", placeholder = "Enter 8-digit SITENO"),
-          actionButton(ns("remove_site_btn"), "Remove Site"),
-          br(), br(),
-          actionButton(ns("remove_site_all"), "Remove All Sites")))
+      column(width = 3, 
+        card(
+          card_header("Filter Sites"),
+          card_body(
+            selectizeInput(ns("state1"), "State", choices = NULL, multiple = TRUE, 
+                           options = list(placeholder = "Select one or more states")),
+            checkboxInput(ns("latitude"), HTML("Latitude (°N)"), FALSE),
+            conditionalPanel(condition = "input.latitude == true", ns = ns,
+              sliderInput(ns("latitude1"), NULL, min = 25, max = 50, value = c(25, 50), ticks = FALSE)),
+            checkboxInput(ns("longitude"), HTML("Longitude (°W)"), FALSE),
+            conditionalPanel(condition = "input.longitude == true", ns = ns,
+              sliderInput(ns("longitude1"), NULL, min = -125, max = -65, value = c(-125, -65), ticks = FALSE)),
+            checkboxInput(ns("elevation"), "Mean Elevation (m)", FALSE),
+            conditionalPanel(condition = "input.elevation == true", ns = ns,
+              sliderInput(ns("elevation1"), NULL, min = 5, max = 3605, value = c(5, 3605), ticks = FALSE)),
+            checkboxInput(ns("area"), HTML("Drainage Area (km<sup>2</sup>)"), FALSE),
+            conditionalPanel(condition = "input.area == true", ns = ns,
+              sliderInput(ns("area1"), NULL, min = 2, max = 26000, value = c(2, 26000), ticks = FALSE)),
+            checkboxInput(ns("slope"), "Mean Slope (percent)", FALSE),
+            conditionalPanel(condition = "input.slope == true", ns = ns,
+              sliderInput(ns("slope1"), NULL, min = 0, max = 70, value = c(0, 70), ticks = FALSE)),
+            actionButton(ns("reset"), "Reset Filters", icon = icon("refresh"), class = "btn-dark", style = "width: 75%; margin-top: 10px;")
+          )
+        )
+      ),
+
+      column(width = 3,   
+        card(
+          card_header("Edit Individual Sites"),
+          card_body(
+            textInput(ns("add_site_no"), "Manually Add Site", placeholder = "Enter 8-digit SITENO"),
+            actionButton(ns("add_site_btn"), "Add Site", icon = icon("plus"), class = "btn-dark", style = "width: 75%; margin-top: 5px;"),
+            textInput(ns("remove_site_no"), "Manually Remove Site", placeholder = "Enter 8-digit SITENO"),
+            actionButton(ns("remove_site_btn"), "Remove Site", icon = icon("minus"), class = "btn-dark", style = "width: 75%; margin-top: 5px;"),
+            actionButton(ns("remove_site_all"), "Remove All Sites", icon = icon("trash"), class = "btn-dark", style = "width: 75%; margin-top: 20px;")
+          )
+        )
+      ),
+
+      column(width = 6,   
+        card(
+          card_header("USGS Station Locations"),
+          card_body(
+            withSpinner(leafletOutput(ns("my_leaflet")), type = 5)
+          )
+        )
+      )
     ),
-    
+      
     fluidRow(
-      column(width = 5,
-        br(),
-        wellPanel(h6(strong("Stream Discharge Record")), br(),
-          withSpinner(DT::DTOutput(ns("discharge_days")), type = 6))),
-     
-       column(width = 7,
-        br(),
-        wellPanel(h6(strong("Selected Stream Gauging Sites")), br(),
-          withSpinner(DT::DTOutput(ns("gauges")), type = 6)))
+      column(width = 6,  
+        card(
+          card_header("Discharge Record"),
+          card_body(
+            withSpinner(DTOutput(ns("discharge_days")), type = 5)
+          )
+        )
+      ),
+
+      column(width = 6, 
+        card(
+          card_header("Selected Sites"),
+          card_body(
+            withSpinner(DTOutput(ns("gauges")), type = 5)
+          )
+        )
+      )
     )
   )
 }
 
-###################################################
+################
 ### SERVER ###
-###################################################
+################
 site_selection_server <- function(id, shared_data) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
@@ -77,6 +94,7 @@ site_selection_server <- function(id, shared_data) {
       })
     })
 
+ # load the discharge count file from .qs format
     discharge_count <- reactive({
       tryCatch({
         qs::qread("data/discharge_mach.qs")
@@ -109,7 +127,7 @@ site_selection_server <- function(id, shared_data) {
       updateSelectizeInput(session, "state1", choices = sort(unique(site_info()$state)))
     })
 
-    # Reactive for filtered sites
+    # reactive for filtered sites
     filtered_sites <- reactive({
       req(site_info())
       siteinfo <- site_info()
@@ -143,7 +161,7 @@ site_selection_server <- function(id, shared_data) {
       )
     }) %>% debounce(500)
 
-    # Initialize selected sites
+    # initialize selected sites
     selected_sites <- reactiveVal()
     observe({
       req(filtered_sites())
@@ -152,7 +170,7 @@ site_selection_server <- function(id, shared_data) {
       shared_data$selected_sites <- filtered_sites()$SITENO
     })
 
-    # Manual site addition
+    # manual site addition
     observeEvent(input$add_site_btn, {
       req(input$add_site_no, shared_data$mach_ids, site_info())
       new_site_no <- stringr::str_pad(input$add_site_no, 8, pad = "0")
@@ -188,7 +206,7 @@ site_selection_server <- function(id, shared_data) {
       updateTextInput(session, "add_site_no", value = "")
     })
 
-    # Manual site removal
+    # manual site removal
     observeEvent(input$remove_site_btn, {
       req(input$remove_site_no)
       remove_site_no <- stringr::str_pad(input$remove_site_no, 8, pad = "0")
@@ -203,7 +221,7 @@ site_selection_server <- function(id, shared_data) {
       updateTextInput(session, "remove_site_no", value = "")
     })
 
-    # Remove all sites
+    # remove all sites
     observeEvent(input$remove_site_all, {
       selected_sites(data.frame(
         SITENO = character(), NAME = character(), STATE = character(),
@@ -214,7 +232,7 @@ site_selection_server <- function(id, shared_data) {
       showNotification("All sites removed successfully!", type = "message")
     })
 
-    # Reset filters
+    # reset filters
     observeEvent(input$reset, {
       updateSelectizeInput(session, "state1", selected = "")
       updateCheckboxInput(session, "latitude", value = FALSE)
@@ -242,7 +260,7 @@ site_selection_server <- function(id, shared_data) {
       shared_data$selected_sites <- site_info()$SITENO[site_info()$SITENO %in% shared_data$mach_ids]
     })
 
-    # Render gauges table
+    # render gauges table
     output$gauges <- DT::renderDT({
       req(selected_sites())
       data <- selected_sites()
@@ -269,7 +287,7 @@ site_selection_server <- function(id, shared_data) {
     }, server = FALSE)
 
     
-    # Reactive to fetch discharge_count data
+    # reactive to fetch discharge_count data
     discharge_data <- reactive({
       req(discharge_count(), selected_sites())
       site_ids <- selected_sites()$SITENO
@@ -285,7 +303,7 @@ site_selection_server <- function(id, shared_data) {
       })
     })
 
-    # Render discharge_days table
+    # render discharge_days table
     output$discharge_days <- DT::renderDT({
       req(discharge_data())
       data <- discharge_data()
@@ -313,7 +331,7 @@ site_selection_server <- function(id, shared_data) {
     
 
 
-    # Render Leaflet map
+    # render Leaflet map
     output$my_leaflet <- renderLeaflet({
       leaflet() %>%
         setView(lng = -99, lat = 40, zoom = 4) %>%
@@ -354,7 +372,5 @@ site_selection_server <- function(id, shared_data) {
             )
           } else . }
     })
-    
- 
   })
 }

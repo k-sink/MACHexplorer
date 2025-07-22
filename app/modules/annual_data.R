@@ -1,13 +1,15 @@
-annualDataUI <- function(id) {
+#######################
+### ANNUAL DATA UI ###
+#######################
+annual_data_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    br(),
+   
     fluidRow(
-      column(
-        width = 4,
-        wellPanel(
-          style = "overflow: visible; height: auto;",
-          h6(strong("Annual Aggregation")),
+      column(width = 4,
+        card(style = "overflow: visible; height: auto;",
+          card_header("Annual Aggregation"), 
+          card_body(style = "overflow: visible; height: auto;",
           radioButtons(
             inputId = ns("year_type"),
             label = NULL,
@@ -16,17 +18,18 @@ annualDataUI <- function(id) {
             selected = "water"
           ),
           h6(strong("Select Statistic")),
-          selectInput(
+          selectizeInput(
             inputId = ns("year_agg"),
             label = NULL,
             multiple = FALSE,
             choices = c("Minimum", "Maximum", "Median", "Mean", "Total"),
             selected = "Mean"
-          )
+          ))
         ),
-        br(),
-        wellPanel(
-          style = "overflow: visible; height: auto;",
+    
+        card(style = "overflow: visible; height: auto;",
+          card_header("Filter Annual Data"), 
+          card_body(style = "overflow: visible; height: auto;",
           h6(strong("Select Variable(s)")),
           checkboxInput(ns("select_prcp_y"), "Precipitation, PRCP (mm)", FALSE),
           checkboxInput(ns("select_tair_y"), HTML("Mean Temperature, TAIR (°C)"), FALSE),
@@ -42,10 +45,10 @@ annualDataUI <- function(id) {
           br(),
           h6(strong("Select Time Period(s)")),
           conditionalPanel(
-            condition = paste0("input['", ns("year_type"), "'] == 'water'"),
+            condition = "input.year_type == 'water'", ns = ns, 
             checkboxInput(ns("select_year_wy"), "Water Year", FALSE),
             conditionalPanel(
-              condition = paste0("input['", ns("select_year_wy"), "'] == true"),
+              condition = "input.select_year_wy == true", ns = ns, 
               selectizeInput(
                 inputId = ns("wateryear1"),
                 label = NULL,
@@ -56,10 +59,10 @@ annualDataUI <- function(id) {
             )
           ),
           conditionalPanel(
-            condition = paste0("input['", ns("year_type"), "'] == 'calendar'"),
+            condition = "input.year_type == 'calendar'", ns = ns, 
             checkboxInput(ns("select_year_cal"), "Calendar Year", FALSE),
             conditionalPanel(
-              condition = paste0("input['", ns("select_year_cal"), "'] == true"),
+              condition = "input.select_year_cal == true", ns = ns, 
               selectizeInput(
                 inputId = ns("calyear1"),
                 label = NULL,
@@ -69,244 +72,239 @@ annualDataUI <- function(id) {
               )
             )
           ),
-          br(),
-          actionButton(ns("retrieve_year"), "Retrieve and View Data")
-        ),
-        br(),
-        wellPanel(
-          h6(strong("Download Annual Data")),
-          br(),
-          downloadButton(ns("download_csv_y"), "Export as csv"),
-          br(),
-          br(),
-          downloadButton(ns("download_separate_y"), "Export as separate csv files")
-        ),
+  
+          actionButton(ns("retrieve_year"), "Retrieve and View Data", 
+                       class = "btn-dark", style = "width: 75%; margin-top: 5px;")
+        )),
+        
+
+        card(
+          card_header("Download Annual Data"), 
+          card_body(
+          downloadButton(ns("download_csv_y"), "Export as csv", 
+                         class = "btn-dark", style = "width: 50%; margin-top: 5px;"),
+       
+          downloadButton(ns("download_separate_y"), "Export as separate csv files", 
+                         class = "btn-dark", style = "width: 75%; margin-top: 5px;")
+        )),
  
       ),
-      column(
-        width = 8,
-        wellPanel(
-          h6(strong("Filtered Annual Data")),
-          br(),
-          DTOutput(ns("merged_data_table_y"))
+      
+      column(width = 8,
+        card(
+          card_header(textOutput(ns("annual_data_heading"))),
+          card_body(style = "overflow-y: auto;",
+           withSpinner(DT::DTOutput(ns("merged_data_table_y")), type = 5)))
         )
       )
-    )
-  )
+     )
 }
 
-annualDataServer <- function(id, shared_data) {
+##########################
+### ANNUAL DATA SERVER ###
+##########################
+annual_data_server <- function(id, shared_data) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    # Get filtered site numbers reactively
+    # Get site numbers for filtered sites from site selection tab
     filtered_sites <- reactive({
-      req(shared_data$site$SITENO)
-      shared_data$site$SITENO
+      sitenos <- shared_data$selected_sites
+      if (is.null(sitenos) || length(sitenos) == 0) {
+        character(0)
+      } else {
+        sitenos
+      }
     })
 
-    # Aggregate annual data based on selected statistic and year type
-    aggregate_annual_data <- function(df, var_name, agg_type) {
-      agg_func <- if (agg_type == "Total" && var_name %in% c("TAIR", "TMIN", "TMAX")) {
-        function(x) round(mean(x, na.rm = TRUE), 2)
-      } else {
-        switch(
-          agg_type,
-          "Minimum" = min,
-          "Maximum" = max,
-          "Median" = median,
-          "Mean" = function(x) round(mean(x, na.rm = TRUE), 2),
-          "Total" = function(x) round(sum(x, na.rm = TRUE), 2)
-        )
-      }
+    # Get total number of sites selected
+    last_site_count <- reactiveVal(NULL)
+    query_triggered <- reactiveVal(FALSE)
 
+    # Aggregate annual data based on selected statistic and year type
+    aggregate_annual_data <- function(tbl, var_name, agg_type) {
+      agg_func <- switch(
+        agg_type,
+        "Minimum" = min,
+        "Maximum" = max,
+        "Median" = median,
+        "Mean" = mean,
+        "Total" = sum
+      )
+      # For TAIR, TMIN, TMAX, use mean for Total aggregation
+      if (agg_type == "Total" && var_name %in% c("TAIR", "TMIN", "TMAX")) {
+        agg_func <- mean
+      }
       if (input$year_type == "water") {
-        df %>%
-          dplyr::mutate(WATERYR = wYear(DATE)) %>%
+        tbl %>%
           dplyr::group_by(SITENO, WATERYR) %>%
-          dplyr::summarise(!!var_name := agg_func(.data[[var_name]]), .groups = "drop")
+          dplyr::summarise(!!var_name := agg_func(!!rlang::sym(var_name), na.rm = TRUE), .groups = "drop") %>%
+          dplyr::mutate(!!var_name := round(!!rlang::sym(var_name), 2))
       } else {
-        df %>%
-          dplyr::mutate(YEAR = lubridate::year(DATE)) %>%
+        tbl %>%
           dplyr::group_by(SITENO, YEAR) %>%
-          dplyr::summarise(!!var_name := agg_func(.data[[var_name]]), .groups = "drop")
+          dplyr::summarise(!!var_name := agg_func(!!rlang::sym(var_name), na.rm = TRUE), .groups = "drop") %>%
+          dplyr::mutate(!!var_name := round(!!rlang::sym(var_name), 2))
       }
     }
 
-    # Retrieve and process data
+    # Reactive for annual data query with debugging
     annual_table <- eventReactive(input$retrieve_year, {
-      # Show progress modal
-      show_modal_progress_line(text = "Retrieving data...", session = session)
-      on.exit(remove_modal_progress(session = session))
+      req(shared_data$database_ready, shared_data$duckdb_connection)
+      conn <- shared_data$duckdb_connection
 
-      # Validate inputs
-      if (is.null(shared_data$mach_folder) || !dir.exists(shared_data$mach_folder)) {
-       shinyalert::shinyalert(
-          title = "Error",
-          text = "Please specify MACH data location",
-          type = "error"
-        )
-        return(data.frame(Message = "No data available"))
+      if (!DBI::dbIsValid(conn)) {
+        shinyalert("Error", "Database connection is invalid. Please re-import.", type = "error")
+        return(data.frame(Message = "Database connection invalid"))
       }
-      
-    if (is.null(shared_data$qs_cache_dir) || !dir.exists(shared_data$qs_cache_dir)) {
-        shinyalert::shinyalert(
-          title = "Error",
-          text = "Click the 'Confirm Sites' button on Site Selection tab to proceed.",
-          type = "error"
-        )
-        return(data.frame(Message = "No data available"))
-      }
-      
-      if (length(filtered_sites()) == 0) {
-          shinyalert::shinyalert(
-           title = "Error",
-           text = "No sites selected",
-           type = "error")
+
+      sites <- filtered_sites()
+      if (length(sites) == 0) {
+        shinyalert("Error", "Please select at least one site.", type = "error")
         return(data.frame(Message = "No sites selected"))
       }
 
-      # Collect selected variables
-      selected_vars_y <- isolate({
-        vars <- c()
-        if (input$select_prcp_y) vars <- c(vars, "PRCP")
-        if (input$select_tair_y) vars <- c(vars, "TAIR")
-        if (input$select_tmin_y) vars <- c(vars, "TMIN")
-        if (input$select_tmax_y) vars <- c(vars, "TMAX")
-        if (input$select_pet_y) vars <- c(vars, "PET")
-        if (input$select_aet_y) vars <- c(vars, "AET")
-        if (input$select_disch_y) vars <- c(vars, "OBSQ")
-        if (input$select_swe_y) vars <- c(vars, "SWE")
-        if (input$select_srad_y) vars <- c(vars, "SRAD")
-        if (input$select_vp_y) vars <- c(vars, "VP")
-        if (input$select_dayl_y) vars <- c(vars, "DAYL")
-        vars
-      })
-
-      if (length(selected_vars_y) == 0) {
-        shinyalert::shinyalert(
-          title = "Error", 
-          text = "No variables selected", 
-          type = "error"
-        )
-        return(data.frame(Message = "No data available"))
+      valid_site_ids <- intersect(shared_data$mach_ids, sites)
+      if (length(valid_site_ids) == 0) {
+        shinyalert("Error", "No valid site data found.", type = "error")
+        return(data.frame(Message = "No valid site data"))
       }
 
-      # Get matching files and IDs
-      selected_site_ids <- shared_data$mach_ids[shared_data$mach_ids %in% filtered_sites()]
+      last_site_count(length(valid_site_ids))
+      query_triggered(TRUE)
 
-      if (length(selected_site_ids) == 0) {
-        showNotification("No matching data files found", type = "error")
-        return(data.frame(Message = "No data available"))
+      vars <- c("SITENO", "DATE")
+      if (isTRUE(input$select_prcp_y)) vars <- c(vars, "PRCP")
+      if (isTRUE(input$select_tair_y)) vars <- c(vars, "TAIR")
+      if (isTRUE(input$select_tmin_y)) vars <- c(vars, "TMIN")
+      if (isTRUE(input$select_tmax_y)) vars <- c(vars, "TMAX")
+      if (isTRUE(input$select_pet_y)) vars <- c(vars, "PET")
+      if (isTRUE(input$select_aet_y)) vars <- c(vars, "AET")
+      if (isTRUE(input$select_disch_y)) vars <- c(vars, "OBSQ")
+      if (isTRUE(input$select_swe_y)) vars <- c(vars, "SWE")
+      if (isTRUE(input$select_srad_y)) vars <- c(vars, "SRAD")
+      if (isTRUE(input$select_vp_y)) vars <- c(vars, "VP")
+      if (isTRUE(input$select_dayl_y)) vars <- c(vars, "DAYL")
+
+      if (length(vars) <= 2) {
+        shinyalert("Error", "Please select at least one variable.", type = "error")
+        query_triggered(FALSE)
+        return(data.frame(Message = "No variables selected"))
       }
 
-    # Check for missing QS files
-      missing_qs <- sapply(selected_site_ids, function(gauge_id) {
-        qs_file <- file.path(shared_data$qs_cache_dir, paste0("basin_", gauge_id, "_MACH.qs"))
-        !file.exists(qs_file)
-      })
-      if (any(missing_qs)) {
+      withProgress(message="Fetching annual data...", value=0, {
+        incProgress(0.3)
+        # Initial query to fetch data
+        tbl <- dplyr::tbl(conn, "mach_daily") %>%
+          dplyr::filter(SITENO %in% valid_site_ids) %>%
+          dplyr::select(all_of(vars))
 
-        shinyalert::shinyalert(
-          title = "Error",
-          text = "Click the 'Confirm Sites' button on Site Selection tab to proceed.",
-          type = "error"
-        )
-        return(data.frame(Message = "Missing QS files"))
-      }
-
-   # Process data with progress
-      all_gauges_data <- list()
-      withProgress(message = "Processing sites", value = 0, {
-        for (gauge_id in selected_site_ids) {
-          qs_file <- file.path(shared_data$qs_cache_dir, paste0("basin_", gauge_id, "_MACH.qs"))
-          incProgress(1 / length(selected_site_ids), detail = paste("Site", gauge_id))
-
+        # Collect data and compute years locally
+        initial_data <- tbl %>% dplyr::collect()
+        # Ensure DATE is a Date object
+        initial_data <- initial_data %>%
+          dplyr::mutate(DATE = as.Date(DATE))
+        if (input$year_type == "water" && isTRUE(input$select_year_wy) && !is.null(input$wateryear1) && length(input$wateryear1) > 0 &&
+            all(!is.na(as.numeric(input$wateryear1)))) {
+          selected_years <- as.numeric(input$wateryear1)
+          tbl <- initial_data %>%
+            dplyr::mutate(WATERYR = wYear(DATE)) %>%
+             dplyr::filter(WATERYR %in% selected_years) 
+        } else if (input$year_type == "calendar" && isTRUE(input$select_year_cal) && !is.null(input$calyear1) && length(input$calyear1) > 0 &&
+                   all(!is.na(as.numeric(input$calyear1)))) {
+          selected_years <- as.numeric(input$calyear1)
+          tbl <- initial_data %>%
+            dplyr::mutate(YEAR = lubridate::year(DATE)) %>%
+            dplyr::filter(YEAR %in% selected_years)
+        } else {
           if (input$year_type == "water") {
-            gauge_df <- create_complete_dates(gauge_id, frequency = "wyearly") %>%
-              dplyr::mutate(WATERYR = wYear(DATE))
+            tbl <- initial_data %>%
+              dplyr::mutate(WATERYR = wYear(DATE)) %>% 
+              dplyr::filter(WATERYR > 1980)
           } else {
-            gauge_df <- create_complete_dates(gauge_id, frequency = "yearly") %>%
+            tbl <- initial_data %>%
               dplyr::mutate(YEAR = lubridate::year(DATE))
           }
+        }
 
-          for (var_name in selected_vars_y) {
-            var_data <- read_qs(qs_file, var_name, gauge_id, frequency = "daily")
-          
-            if (!is.null(var_data) && nrow(var_data) > 0 && var_name %in% colnames(var_data)) {
-              var_agg <- aggregate_annual_data(var_data, var_name, input$year_agg)
-
-              if (input$year_type == "water") {
-                gauge_df <- dplyr::left_join(gauge_df, var_agg, by = c("SITENO", "WATERYR"))
-              } else {
-                gauge_df <- dplyr::left_join(gauge_df, var_agg, by = c("SITENO", "YEAR"))
-              }
-            } else {
-            
-              gauge_df[[var_name]] <- NA
-            }
+        combined_df <- NULL
+        year_col <- if (input$year_type == "water") "WATERYR" else "YEAR"
+        for (var in vars[vars != "SITENO" & vars != "DATE"]) {
+          agg_tbl <- aggregate_annual_data(tbl, var, input$year_agg)
+          if (is.null(combined_df)) {
+            combined_df <- agg_tbl
+          } else {
+            combined_df <- combined_df %>%
+              dplyr::full_join(agg_tbl, by = c("SITENO", year_col))
           }
-          all_gauges_data[[gauge_id]] <- gauge_df
+          incProgress(0.3 / length(vars[vars != "SITENO" & vars != "DATE"]))
         }
+        incProgress(0.3)
+
+        df <- tryCatch({
+          df <- combined_df %>%
+            dplyr::arrange(SITENO, !!rlang::sym(year_col)) %>%
+            dplyr::collect()
+          df$SITENO <- as.character(df$SITENO)
+          df[[year_col]] <- as.integer(df[[year_col]])
+          # Ensure numeric variables, handling NA for OBSQ
+          for (var in vars[vars != "SITENO" & vars != "DATE" & vars != year_col]) {
+            df[[var]] <- suppressWarnings(as.numeric(df[[var]]))
+          }
+          df
+        }, error = function(e) {
+          shinyalert("Error", paste("Error fetching data:", e$message), type = "error")
+          return(data.frame(Message = "Error fetching data"))
+        })
+        incProgress(1)
+        df
       })
-
-      # Combine all gauge data frames
-      combined_df <- dplyr::bind_rows(all_gauges_data)
-
-
-      if (input$year_type == "water") {
-        if (length(input$wateryear1) > 0) {
-
-          combined_df <- combined_df %>%
-            dplyr::filter(WATERYR %in% input$wateryear1)
-
-        }
-      } else {
-        if (length(input$calyear1) > 0) {
- 
-          combined_df <- combined_df %>%
-            dplyr::filter(YEAR %in% input$calyear1)
-
-        }
-      }
-
-      if (nrow(combined_df) == 0) {
-        shinyalert::shinyalert(
-          title = "Error",
-          text = "No data matches the selected filters",
-          type = "error"
-        )
-        return(data.frame(Message = "No data available"))
-      }
-
-      combined_df %>% dplyr::select(-DATE)
     })
 
+    # Update heading
+    output$annual_data_heading <- renderText({
+      req(last_site_count())
+      sprintf("Filtered Annual Data for %d sites", last_site_count())
+    })
 
-    # Render data table with client-side processing
-    output$merged_data_table_y <- DT::renderDataTable({
+    # Render data table
+    output$merged_data_table_y <- renderDT({
+      req(annual_table(), query_triggered())
       data <- annual_table()
       if ("Message" %in% colnames(data)) {
         DT::datatable(
           data,
-          options = list(pageLength = 10, scrollX = TRUE, dom = "t"),
-          class = "display responsive nowrap"
+          options = list(pageLength = 10, scrollX = TRUE, dom = "Blfrtip"),
+          class = "display responsive nowrap",
+          rownames = FALSE
         )
       } else {
+        col_defs <- lapply(seq_along(colnames(data)), function(i) {
+          col_name <- colnames(data)[i]
+          if (col_name %in% c("SITENO", "YEAR", "WATERYR")) {
+            list(targets = i - 1, title = col_name, width = 100, render = DT::JS("function(data) { return data || ''; }"))
+          } else {
+            list(targets = i - 1, title = col_name, render = DT::JS("function(data) { return data !== null && data !== undefined ? Number(data).toFixed(2) : ''; }"))
+          }
+        })
+
         DT::datatable(
-          data,
+          as.data.frame(data),
           options = list(
             pageLength = 10,
-            scrollX = TRUE,
             lengthMenu = c(5, 10, 20, 50),
+            scrollX = TRUE,
             dom = "Blfrtip",
-            paging = TRUE, 
-            server = TRUE
+            paging = TRUE,
+            serverSide = TRUE,
+            processing = TRUE,
+            columnDefs = col_defs
           ),
-          class = "display responsive nowrap"
+          class = "display responsive nowrap",
+          rownames = FALSE
         )
       }
-    })
+    }, server = TRUE)
 
     # Download single CSV
     output$download_csv_y <- downloadHandler(
@@ -314,16 +312,33 @@ annualDataServer <- function(id, shared_data) {
         paste0("MACH_annual_", Sys.Date(), ".csv")
       },
       content = function(file) {
-        show_modal_progress_line(text = "Creating CSV file...", session = session)
-        on.exit(remove_modal_progress(session = session))
-        withProgress(message = "Creating CSV file", value = 0, {
-          for (i in 1:5) {
-            Sys.sleep(0.2)
-            incProgress(1/5)
-          }
-          write.csv(annual_table(), file, row.names = FALSE)
+        req(shared_data$database_ready, shared_data$duckdb_connection)
+        conn <- shared_data$duckdb_connection
+
+        sites <- filtered_sites()
+        valid_site_ids <- intersect(shared_data$mach_ids, sites)
+        if (query_triggered() && length(valid_site_ids) != last_site_count()) {
+          message("download_csv_y: Site selection mismatch, current sites: ", length(valid_site_ids), ", last count: ", last_site_count())
+          shinyalert("We have our differences",
+            "Site selection has changed. Please click 'Retrieve and View Data' to update the data before downloading.",
+            type = "warning"
+          )
+        }
+
+        req(annual_table())
+        data <- annual_table()
+        if ("Message" %in% colnames(data)) {
+          return()
+        }
+
+        withProgress(message = "Creating CSV file...", value = 0, {
+          incProgress(0.8)
+          readr::write_csv(data, file)
+          incProgress(1)
+          message("download_csv_y: CSV written successfully")
         })
-      }
+      },
+      contentType = "text/csv"
     )
 
     # Download separate CSV files as ZIP
@@ -332,30 +347,53 @@ annualDataServer <- function(id, shared_data) {
         paste0("MACH_annual_", Sys.Date(), ".zip")
       },
       content = function(file) {
-        show_modal_progress_line(text = "Creating ZIP file...", session = session)
-        on.exit(remove_modal_progress(session = session))
-        temp_dir <- "basin_files/"
-        dir.create(temp_dir, showWarnings = FALSE)
-        unlink(paste0(temp_dir, "*"), recursive = TRUE)
-        full_data <- annual_table()
-        sites <- unique(full_data$SITENO)
-        n_sites <- length(sites)
-        withProgress(message = "Creating ZIP file", value = 0, {
-          for (i in seq_along(sites)) {
-            siteno <- sites[i]
-            data <- full_data[full_data$SITENO == siteno, ]
-            write.csv(data, file = paste0(temp_dir, "MACH_annual_", siteno, ".csv"), row.names = FALSE)
-            incProgress(1 / n_sites)
-          }
-          zip::zip(
-            zipfile = file,
-            files = list.files(temp_dir, full.names = TRUE)
+        req(shared_data$database_ready, shared_data$duckdb_connection)
+        conn <- shared_data$duckdb_connection
+
+        sites <- filtered_sites()
+        valid_site_ids <- intersect(shared_data$mach_ids, sites)
+        if (query_triggered() && length(valid_site_ids) != last_site_count()) {
+          message("download_separate_y: Site selection mismatch, current sites: ", length(valid_site_ids), ", last count: ", last_site_count())
+          shinyalert("We have our differences.",
+            "Site selection has changed. Please click 'Retrieve and View Data' to update the data before downloading.",
+            type = "warning"
           )
+        }
+
+        req(annual_table())
+        full_data <- annual_table()
+        if ("Message" %in% colnames(full_data)) {
+          return()
+        }
+
+        sites <- unique(full_data$SITENO)
+        temp_download_dir <- file.path(tempdir(), paste0("download_", format(Sys.time(), "%Y%m%d_%H%M%S")))
+        dir.create(temp_download_dir, showWarnings = FALSE, recursive = TRUE)
+        on.exit(unlink(temp_download_dir, recursive = TRUE, force = TRUE), add = TRUE)
+
+        withProgress(message = "Creating ZIP file...", value = 0, {
+          csv_files <- character(length(sites))
+          for (i in seq_along(sites)) {
+            site <- sites[i]
+            safe_site <- gsub("[^[:alnum:]_-]", "_", site)
+            csv_file <- file.path(temp_download_dir, paste0("MACH_annual_", safe_site, ".csv"))
+            csv_files[i] <- csv_file
+            data <- full_data %>% dplyr::filter(SITENO == site)
+            if (nrow(data) > 0) {
+              readr::write_csv(data, csv_file)
+              message("download_separate_y: CSV written for site ", site)
+            }
+            incProgress(1 / length(sites), detail = paste("Processed site", site))
+          }
+
+          valid_csv_files <- csv_files[file.exists(csv_files)]
+          if (length(valid_csv_files) > 0) {
+            zip::zip(zipfile = file, files = basename(valid_csv_files), root = temp_download_dir)
+            message("download_separate_y: ZIP file created successfully")
+          }
         })
-      }
+      },
+      contentType = "application/zip"
     )
-
-
-
   })
 }

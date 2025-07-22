@@ -1,173 +1,162 @@
 #######################
 ### DAILY DATA UI ###
 #######################
-daily_data_ui = function(id) {
-  ns = NS(id)
+daily_data_ui <- function(id) {
+  ns <- NS(id)
+  
   tagList(
-    br(),
     fluidRow(
       column(width = 3,
-        wellPanel(
-          style = "overflow: visible; height: auto;",
-          h6(strong("Select Variable(s)")),
-          checkboxInput(ns("select_prcp"), "Precipitation, PRCP (mm)", FALSE),
-          conditionalPanel(
-            condition = "input.select_prcp == true", ns = ns,
-            fluidRow(
-              column(width = 6, numericInput(ns("prcp_min"), "Min PRCP", value = 0, min = 0, max = 300, step = 1)),
-              column(width = 6, numericInput(ns("prcp_max"), "Max PRCP", value = 300, min = 0, max = 300, step = 1))
-            )
-          ),
-
-          checkboxInput(ns("select_tair"), HTML("Mean Temperature, TAIR (°C)"), FALSE),
-          conditionalPanel(
-            condition = "input.select_tair == true", ns = ns,
-            fluidRow(
-              column(width = 6, numericInput(ns("tair_min"), "Min TAIR", value = -50, min = -50, max = 50, step = 1)),
-              column(width = 6, numericInput(ns("tair_max"), "Max TAIR", value = 50, min = -50, max = 50, step = 1))
-            )
-          ),
-
-          checkboxInput(ns("select_tmin"), HTML("Minimum Temperature, TMIN (°C)"), FALSE),
-          conditionalPanel(
-            condition = "input.select_tmin == true", ns = ns,
-            fluidRow(
-              column(width = 6, numericInput(ns("tmin_min"), "Min TMIN", value = -50, min = -50, max = 50, step = 1)),
-              column(width = 6, numericInput(ns("tmin_max"), "Max TMIN", value = 50, min = -50, max = 50, step = 1))
-            )
-          ),
-
-          checkboxInput(ns("select_tmax"), HTML("Maximum Temperature, TMAX (°C)"), FALSE),
-          conditionalPanel(
-            condition = "input.select_tmax == true", ns = ns,
-            fluidRow(
-              column(width = 6, numericInput(ns("tmax_min"), "Min TMAX", value = -50, min = -50, max = 50, step = 1)),
-              column(width = 6, numericInput(ns("tmax_max"), "Max TMAX", value = 50, min = -50, max = 50, step = 1))
-            )
-          ),
-
-          checkboxInput(ns("select_pet"), "Potential Evapotranspiration, PET (mm)", FALSE),
-          conditionalPanel(
-            condition = "input.select_pet == true", ns = ns,
-            fluidRow(
-              column(width = 6, numericInput(ns("pet_min"), "Min PET", value = -1, min = -1, max = 40, step = 1)),
-              column(width = 6, numericInput(ns("pet_max"), "Max PET", value = 40, min = -1, max = 40, step = 1))
-            )
-          ),
-
-          checkboxInput(ns("select_aet"), "Actual Evapotranspiration, AET (mm)", FALSE),
-          conditionalPanel(
-            condition = "input.select_aet == true", ns = ns,
-            fluidRow(
-              column(width = 6, numericInput(ns("aet_min"), "Min AET", value = -1, min = -1, max = 40, step = 1)),
-              column(width = 6, numericInput(ns("aet_max"), "Max AET", value = 40, min = -1, max = 40, step = 1))
-            )
-          ),
-
-          checkboxInput(ns("select_disch"), "Observed Discharge, OBSQ (mm)", FALSE),
-          conditionalPanel(
-            condition = "input.select_disch == true", ns = ns,
-            fluidRow(
-              column(width = 6, numericInput(ns("disch_min"), "Min OBSQ", value = -1, min = -1, max = 400, step = 1)),
-              column(width = 6, numericInput(ns("disch_max"), "Max OBSQ", value = 400, min = -1, max = 400, step = 1))
-            )
-          ),
-
-          checkboxInput(ns("select_swe"), "Snow Water Equivalent, SWE (mm)", FALSE),
-          conditionalPanel(
-            condition = "input.select_swe == true", ns = ns,
-            fluidRow(
-              column(width = 6, numericInput(ns("swe_min"), "Min SWE", value = 0, min = 0, max = 1850, step = 1)),
-              column(width = 6, numericInput(ns("swe_max"), "Max SWE", value = 1850, min = 0, max = 1850, step = 1))
-            )
-          ),
-
-          checkboxInput(ns("select_srad"), HTML("Shortwave Radiation, SRAD (W/m<sup>2</sup>)"), FALSE),
-          conditionalPanel(
-            condition = "input.select_srad == true", ns = ns,
-            fluidRow(
-              column(width = 6, numericInput(ns("srad_min"), "Min SRAD", value = 10, min = 10, max = 900, step = 1)),
-              column(width = 6, numericInput(ns("srad_max"), "Max SRAD", value = 900, min = 10, max = 900, step = 1))
-            )
-          ),
-
-          checkboxInput(ns("select_vp"), "Water Vapor Pressure, VP (Pa)", FALSE),
-          conditionalPanel(
-            condition = "input.select_vp == true", ns = ns,
-            fluidRow(
-              column(width = 6, numericInput(ns("vp_min"), "Min VP", value = 5, min = 5, max = 4000, step = 1)),
-              column(width = 6, numericInput(ns("vp_max"), "Max VP", value = 4000, min = 5, max = 4000, step = 1))
-            )
-          ),
-
-          checkboxInput(ns("select_dayl"), "Day Length, DAYL (sec)", FALSE),
-          conditionalPanel(
-            condition = "input.select_dayl == true", ns = ns,
-            fluidRow(
-              column(width = 6, numericInput(ns("dayl_min"), "Min DAYL", value = 30000, min = 30000, max = 60000, step = 1)),
-              column(width = 6, numericInput(ns("dayl_max"), "Max DAYL", value = 60000, min = 30000, max = 60000, step = 1))
-            )
-          ),
-
-          br(),
-          h6(strong("Select Time Period(s)")),
-          checkboxInput(ns("select_date"), "Date Range", FALSE),
-          conditionalPanel(
-            condition = "input.select_date == true", ns = ns,
-            dateRangeInput(ns("date_range1"), label = NULL,
-              start = "1980-01-01", end = "2023-12-31",
-              min = "1980-01-01", max = "2023-12-31",
-              format = "mm/dd/yyyy", separator = "to")
-          ),
-
-          checkboxInput(ns("select_year"), "Calendar Year", FALSE),
-          conditionalPanel(
-            condition = "input.select_year == true", ns = ns,
-            selectizeInput(ns("year1"), label = NULL,
-              choices = years, multiple = TRUE,
-              options = list(placeholder = "Select one or more"))
-          ),
-
-          checkboxInput(ns("select_month"), "Month", FALSE),
-          conditionalPanel(
-            condition = "input.select_month == true", ns = ns,
-            selectizeInput(ns("month1"), label = NULL,
-              choices = c("JAN"= 1, "FEB"= 2, "MAR"= 3, "APR"= 4, "MAY"= 5, "JUN"= 6,
-                          "JUL"= 7, "AUG"= 8, "SEP"= 9, "OCT"= 10, "NOV"= 11, "DEC"= 12),
-              multiple = TRUE, options = list(placeholder = "Select one or more"))
-          ),
-
-          br(),
-          actionButton(ns("retrieve_data"), "Retrieve and View Data"), 
-          br(), br(), 
-            actionButton(ns("reset_filters_daily"), "Reset all Filters")
+        card(style = "overflow: visible; height: auto;",
+          card_header("Filter Daily Data"),
+          card_body(style = "overflow: visible; height: auto;",
+            h6(strong("Select Variable(s)")),
+            checkboxInput(ns("select_prcp"), "Precipitation, PRCP (mm)", FALSE),
+            conditionalPanel(
+              condition = "input.select_prcp == true", ns = ns,
+              fluidRow(
+                column(width = 6, numericInput(ns("prcp_min"), "Min PRCP", value = 0, min = 0, max = 300, step = 1)),
+                column(width = 6, numericInput(ns("prcp_max"), "Max PRCP", value = 300, min = 0, max = 300, step = 1))
+              )
+            ),
+            checkboxInput(ns("select_tair"), HTML("Mean Temperature, TAIR (°C)"), FALSE),
+            conditionalPanel(
+              condition = "input.select_tair == true", ns = ns,
+              fluidRow(
+                column(width = 6, numericInput(ns("tair_min"), "Min TAIR", value = -50, min = -50, max = 50, step = 1)),
+                column(width = 6, numericInput(ns("tair_max"), "Max TAIR", value = 50, min = -50, max = 50, step = 1))
+              )
+            ),
+            checkboxInput(ns("select_tmin"), HTML("Minimum Temperature, TMIN (°C)"), FALSE),
+            conditionalPanel(
+              condition = "input.select_tmin == true", ns = ns,
+              fluidRow(
+                column(width = 6, numericInput(ns("tmin_min"), "Min TMIN", value = -50, min = -50, max = 50, step = 1)),
+                column(width = 6, numericInput(ns("tmin_max"), "Max TMIN", value = 50, min = -50, max = 50, step = 1))
+              )
+            ),
+            checkboxInput(ns("select_tmax"), HTML("Maximum Temperature, TMAX (°C)"), FALSE),
+            conditionalPanel(
+              condition = "input.select_tmax == true", ns = ns,
+              fluidRow(
+                column(width = 6, numericInput(ns("tmax_min"), "Min TMAX", value = -50, min = -50, max = 50, step = 1)),
+                column(width = 6, numericInput(ns("tmax_max"), "Max TMAX", value = 50, min = -50, max = 50, step = 1))
+              )
+            ),
+            checkboxInput(ns("select_pet"), "Potential Evapotranspiration, PET (mm)", FALSE),
+            conditionalPanel(
+              condition = "input.select_pet == true", ns = ns,
+              fluidRow(
+                column(width = 6, numericInput(ns("pet_min"), "Min PET", value = -1, min = -1, max = 40, step = 1)),
+                column(width = 6, numericInput(ns("pet_max"), "Max PET", value = 40, min = -1, max = 40, step = 1))
+              )
+            ),
+            checkboxInput(ns("select_aet"), "Actual Evapotranspiration, AET (mm)", FALSE),
+            conditionalPanel(
+              condition = "input.select_aet == true", ns = ns,
+              fluidRow(
+                column(width = 6, numericInput(ns("aet_min"), "Min AET", value = -1, min = -1, max = 40, step = 1)),
+                column(width = 6, numericInput(ns("aet_max"), "Max AET", value = 40, min = -1, max = 40, step = 1))
+              )
+            ),
+            checkboxInput(ns("select_disch"), "Observed Discharge, OBSQ (mm)", FALSE),
+            conditionalPanel(
+              condition = "input.select_disch == true", ns = ns,
+              fluidRow(
+                column(width = 6, numericInput(ns("disch_min"), "Min OBSQ", value = -1, min = -1, max = 400, step = 1)),
+                column(width = 6, numericInput(ns("disch_max"), "Max OBSQ", value = 400, min = -1, max = 400, step = 1))
+              )
+            ),
+            checkboxInput(ns("select_swe"), "Snow Water Equivalent, SWE (mm)", FALSE),
+            conditionalPanel(
+              condition = "input.select_swe == true", ns = ns,
+              fluidRow(
+                column(width = 6, numericInput(ns("swe_min"), "Min SWE", value = 0, min = 0, max = 1850, step = 1)),
+                column(width = 6, numericInput(ns("swe_max"), "Max SWE", value = 1850, min = 0, max = 1850, step = 1))
+              )
+            ),
+            checkboxInput(ns("select_srad"), HTML("Shortwave Radiation, SRAD (W/m<sup>2</sup>)"), FALSE),
+            conditionalPanel(
+              condition = "input.select_srad == true", ns = ns,
+              fluidRow(
+                column(width = 6, numericInput(ns("srad_min"), "Min SRAD", value = 10, min = 10, max = 900, step = 1)),
+                column(width = 6, numericInput(ns("srad_max"), "Max SRAD", value = 900, min = 10, max = 900, step = 1))
+              )
+            ),
+            checkboxInput(ns("select_vp"), "Water Vapor Pressure, VP (Pa)", FALSE),
+            conditionalPanel(
+              condition = "input.select_vp == true", ns = ns,
+              fluidRow(
+                column(width = 6, numericInput(ns("vp_min"), "Min VP", value = 5, min = 5, max = 4000, step = 1)),
+                column(width = 6, numericInput(ns("vp_max"), "Max VP", value = 4000, min = 5, max = 4000, step = 1))
+              )
+            ),
+            checkboxInput(ns("select_dayl"), "Day Length, DAYL (sec)", FALSE),
+            conditionalPanel(
+              condition = "input.select_dayl == true", ns = ns,
+              fluidRow(
+                column(width = 6, numericInput(ns("dayl_min"), "Min DAYL", value = 30000, min = 30000, max = 60000, step = 1)),
+                column(width = 6, numericInput(ns("dayl_max"), "Max DAYL", value = 60000, min = 30000, max = 60000, step = 1))
+              )
+            ),
+            br(),
+            h6(strong("Select Time Period(s)")),
+            checkboxInput(ns("select_date"), "Date Range", FALSE),
+            conditionalPanel(
+              condition = "input.select_date == true", ns = ns,
+              dateRangeInput(ns("date_range1"), label = NULL,
+                start = "1980-01-01", end = "2023-12-31",
+                min = "1980-01-01", max = "2023-12-31",
+                format = "mm/dd/yyyy", separator = "to")
+            ),
+            checkboxInput(ns("select_year"), "Calendar Year", FALSE),
+            conditionalPanel(
+              condition = "input.select_year == true", ns = ns,
+              selectizeInput(ns("year1"), label = NULL,
+                choices = years, multiple = TRUE, options = list(placeholder = "Select one or more"))
+            ),
+            
+            checkboxInput(ns("select_month"), "Month", FALSE),
+            conditionalPanel(
+              condition = "input.select_month == true", ns = ns,
+              selectizeInput(ns("month1"), label = NULL,
+                choices = c("JAN"= 1, "FEB"= 2, "MAR"= 3, "APR"= 4, "MAY"= 5, "JUN"= 6,
+                            "JUL"= 7, "AUG"= 8, "SEP"= 9, "OCT"= 10, "NOV"= 11, "DEC"= 12),
+                multiple = TRUE, options = list(placeholder = "Select one or more"))
+            ),
+            
+            actionButton(ns("retrieve_data"), "Retrieve and View Data",
+                         class = "btn-dark", style = "width: 75%; margin-top: 5px;"),
+            actionButton(ns("reset_filters_daily"), "Reset all Filters", icon("refresh"),
+                         class = "btn-dark", style = "width: 75%; margin-top: 10px;")
+          )
         ),
-        br(),
-        wellPanel(
-          h6(strong("Download Daily Data")),
-          br(),
-          downloadButton(ns("download_csv"), "Export as csv"),
-          br(), br(),
-          downloadButton(ns("download_separate"), "Export as separate csv files")
+        card(
+          card_header("Download Daily Data"),
+          card_body(
+            downloadButton(ns("download_csv"), "Export as csv",
+                           class = "btn-dark", style = "width: 50%; margin-top: 5px;"),
+            downloadButton(ns("download_separate"), "Export as separate csv files",
+                           class = "btn-dark", style = "width: 75%; margin-top: 5px;")
+          )
         )
       ),
       column(width = 6,
-        style = "overflow: visible; height: auto;",
-          wellPanel(
-          h6(strong(textOutput(ns("daily_data_heading")))),
-          br(), 
-          div(style = "height: auto;",
-          shinycssloaders::withSpinner(DT::DTOutput(ns("merged_data_table")), type = 5)
-        ))
-      ), 
-      column(width = 3, 
-             style = "overflow: visible; height: auto;",
-             wellPanel(
-               h6(strong("Data summary")), 
-               br(), 
-               div(style = "height: auto;",
-               shinycssloaders::withSpinner(DT::DTOutput(ns("daily_summary")), type = 5)
-             )))
+        card(
+          card_header(textOutput(ns("daily_data_heading"))),
+          card_body(
+            shinycssloaders::withSpinner(DT::DTOutput(ns("merged_data_table")), type = 5)
+          )
+        )
+      ),
+      column(width = 3,
+        card(
+          card_header("Data Summary"),
+          card_body(
+            shinycssloaders::withSpinner(DT::DTOutput(ns("daily_summary")), type = 5)
+          )
+        )
+      )
     )
   )
 }
@@ -488,89 +477,76 @@ daily_data_server <- function(id, shared_data) {
       summary_df
     })
 
-    # render DT with client-side processing
-    output$merged_data_table <- DT::renderDT({
-      req(table_data(), query_triggered())
-      df <- table_data()
-      if (is.null(df) || nrow(df) == 0 || !query_triggered()) {
-        return(DT::datatable(
-          data.frame(SITENO = character(), DATE = character()),
-          options = list(pageLength = 25, searching = FALSE, ordering = TRUE, autoWidth = FALSE, dom = 'lfrtip', scrollX = TRUE),
-          rownames = FALSE
-        ))
-      }
+output$merged_data_table <- DT::renderDT({
+  req(table_data(), query_triggered())
+  df <- table_data()
+  if (is.null(df) || nrow(df) == 0 || !query_triggered()) {
+    return(DT::datatable(
+      data.frame(SITENO = character(), DATE = character()),
+      options = list(pageLength = 10, scrollX = TRUE, dom = "Blfrtip"),
+      class = "display responsive nowrap",
+      rownames = FALSE
+    ))
+  }
 
-      col_defs <- lapply(seq_along(colnames(df)), function(i) {
-        col_name <- colnames(df)[i]
-        if (col_name == "DATE") {
-          list(targets = i - 1, title = col_name, width = 100, render = DT::JS("function(data) { return data || ''; }"))
-        } else if (col_name == "SITENO") {
-          list(targets = i - 1, title = col_name, width = 100, render = DT::JS("function(data) { return data || ''; }"))
-        } else if (col_name %in% c("PRCP", "TAIR", "TMIN", "TMAX", "SWE", "SRAD", "OBSQ", "PET", "AET", "VP", "DAYL")) {
-          list(targets = i - 1, title = col_name, render = DT::JS("function(data) { return data !== null && data !== undefined ? Number(data).toFixed(2) : ''; }"))
-        }
-      })
+  col_defs <- lapply(seq_along(colnames(df)), function(i) {
+    col_name <- colnames(df)[i]
+    if (col_name == "DATE") {
+      list(targets = i - 1, title = col_name, width = 100, render = DT::JS("function(data) { return data || ''; }"))
+    } else if (col_name == "SITENO") {
+      list(targets = i - 1, title = col_name, width = 100, render = DT::JS("function(data) { return data || ''; }"))
+    } else if (col_name %in% c("PRCP", "TAIR", "TMIN", "TMAX", "SWE", "SRAD", "OBSQ", "PET", "AET", "VP", "DAYL")) {
+      list(targets = i - 1, title = col_name, render = DT::JS("function(data) { return data !== null && data !== undefined ? Number(data).toFixed(2) : ''; }"))
+    }
+  })
 
-      DT::datatable(
-        df,
-        options = list(
-          pageLength = 25,
-          lengthMenu = c(10, 25, 50, 100),
-          searching = TRUE,
-          ordering = TRUE,
-          autoWidth = FALSE,
-          dom = 'lfrtip',
-          scrollX = TRUE,
-          columnDefs = col_defs
-        ),
-        rownames = FALSE,
-        class = 'cell-border stripe',
-        filter = 'none',
-        callback = DT::JS(
-          "table.on('draw.dt', function() {
-             table.rows().every(function() {
-               var row = this.data();
-               for (var i = 0; i < row.length; i++) {
-                 if (row[i] === null || row[i] === undefined) row[i] = '';
-               }
-               this.data(row);
-             });
-           });"
-        )
+  DT::datatable(
+    df,
+    options = list(
+      pageLength = 10,
+      lengthMenu = c(5, 10, 20, 50),
+      scrollX = TRUE,
+      dom = "Blfrtip",
+      paging = TRUE,
+      server = FALSE,
+      columnDefs = col_defs
+    ),
+    class = "display responsive nowrap",
+    rownames = FALSE,
+    filter = "none"
+  )
+}, server = FALSE)
+
+output$daily_summary <- DT::renderDT({
+  req(summary_data(), query_triggered())
+  df <- summary_data()
+  if (nrow(df) == 0 || !query_triggered()) {
+    return(DT::datatable(
+      data.frame(SITENO = character(), TOTAL = integer()),
+      options = list(pageLength = 10, scrollX = TRUE, dom = "Blfrtip"),
+      class = "display responsive nowrap",
+      rownames = FALSE
+    ))
+  }
+
+  DT::datatable(
+    df,
+    options = list(
+      pageLength = 10,
+      lengthMenu = c(5, 10, 20, 50),
+      scrollX = TRUE,
+      dom = "Blfrtip",
+      paging = TRUE,
+      server = FALSE,
+      columnDefs = list(
+        list(targets = "_all", render = DT::JS("function(data) { return data !== null && data !== undefined ? data : ''; }"))
       )
-    }, server = FALSE)
-
-    # Render summary table (SITENO, TOTAL)
-    output$daily_summary <- DT::renderDT({
-      req(summary_data(), query_triggered())
-      df <- summary_data()
-      if (nrow(df) == 0 || !query_triggered()) {
-        return(DT::datatable(
-          data.frame(SITENO = character(), TOTAL = integer()),
-          options = list(pageLength = 10, searching = FALSE, ordering = TRUE, autoWidth = FALSE, dom = 'lfrtip', scrollX = TRUE),
-          rownames = FALSE
-        ))
-      }
-
-      DT::datatable(
-        df,
-        options = list(
-          pageLength = 10,
-          lengthMenu = c(10, 25, 50),
-          searching = TRUE,
-          ordering = TRUE,
-          autoWidth = FALSE,
-          dom = 'lfrtip',
-          scrollX = TRUE,
-          columnDefs = list(
-            list(targets = "_all", render = DT::JS("function(data) { return data !== null && data !== undefined ? data : ''; }"))
-          )
-        ),
-        rownames = FALSE,
-        class = 'cell-border stripe',
-        filter = 'none'
-      )
-    }, server = FALSE)
+    ),
+    class = "display responsive nowrap",
+    rownames = FALSE,
+    filter = "none"
+  )
+}, server = FALSE)
 
     # Update heading
     output$daily_data_heading <- renderText({

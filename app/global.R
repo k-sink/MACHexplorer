@@ -1,4 +1,8 @@
-# Load required libraries
+###################################
+### GLOBAL FILE ###
+###################################
+
+# load required libraries
 library(shiny)
 library(bslib)
 library(leaflet)
@@ -7,6 +11,7 @@ library(shinyjs)
 library(shinybusy)
 library(shinyalert)
 library(shinycssloaders)
+library(shinyWidgets)
 library(DT)
 library(duckdb)
 library(dplyr)
@@ -18,9 +23,6 @@ library(readr)
 library(lubridate)
 library(zip)
 
-###################################
-### GLOBAL FUNCTIONS ###
-###################################
 
 # numeric vector for calendar years to filter daily data
 years = seq(from = 1980, to = 2023, by = 1)
@@ -30,8 +32,8 @@ wateryears = seq(from = 1981, to = 2023, by = 1)
 
 
 # create water year using date 
-#  wYear = function(date) {
-#  ifelse(month(date) < 10, year(date), year(date)+1)}
+  wYear = function(date) {
+  ifelse(lubridate::month(date) < 10, lubridate::year(date), lubridate::year(date)+1)}
 
   
    
