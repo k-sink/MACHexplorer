@@ -32,3 +32,5 @@ This project is licensed under the MIT License - see the `LICENSE` file for deta
 ### Data Import
 The app uses a database management system called [DuckDB] (https://duckdb.org/), which is portable and provides APIs for languages such as R. Prior to using the app, 
 download the `full_dataset.duckdb` database file.  
+
+<img width="1920" height="919" alt="Image" src="https://github.com/user-attachments/assets/cd8da2f9-d17d-4e7c-b501-396ac0e3097f" />
