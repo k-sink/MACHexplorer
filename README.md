@@ -91,6 +91,7 @@ can be displayed by clicking the checkbox (*Figure 7*). The polygons represent t
 
 A point can be clicked on in the map to display a pop-up box containing the site number, site name, and coordinates (*Figure 8*).  
 <img width="896" height="406" alt="Image" src="https://github.com/user-attachments/assets/6856c0f9-fcac-4061-adcd-49d4347e0c76" />
+
 <i>Figure 8: Pop-up information box.</i>
 <br></br>
 
@@ -112,26 +113,161 @@ in decimal degrees west (*LONG*), mean elevation in meters above sea level (*ELE
 <i>Figure 10: Selected sites with SITENO, stream gauging site name (NAME), latitude (LAT), longitude (LONG), elevation (ELEV), drainage area (AREA), and mean overall slope (SLOPE).</i>
 <br></br>
 
-### Daily Data
-Once the filtered basin selections are made, you have the option to evaluate data at the daily, monthly, and/or annual scale. For daily data, shown in *Figure 11*, each variable can be filtered by a range of values after the variable is selected. 
+### Daily, Monthly, and Annual Data
+Once the filtered basin selections are made, you have the option to evaluate data at the daily, monthly, and/or annual scale. 
+
+#### Daily Data
+The **Daily Data** dashboard is shown in *Figure 11*. 
+
+<img width="928" height="717" alt="Image" src="https://github.com/user-attachments/assets/3fcdab35-6546-4e00-98fb-0be273f2e473" />
+
+<i>Figure 11: Daily Data dashboard.</i>
+<br></br>
+
+For daily data, shown in *Figure 12*, each variable can be filtered by a range of values after the variable is selected. 
 To select a variable, check the box under *"Select Variable(s)"*. Once selected, minimum and maximum value boxes will be displayed. If you want all possible values, you do not need to make any adjustments. The default values cover the range among the 1,014 sites. 
-Variable abbreviations and units are: precipitation (*PRCP*) in millimeters per day, mean air temperature (*TAIR*), minimum air temperature (*TMIN*), and maximum air temperature (*TMAX*) in degrees Celcius, potential evapotranspiration (*PET*) in millimeters per day, actual evapotranspiration (*AET*) in millimeters per day, stream discharge (*OBSQ*) in millimeters per day, snow water equivalent (*SWE*) in  millimeters per day, shortwave radiation (*SRAD*) in watts per square meter, water vapor pressure (*VP*) Pascals, and day length (*DAYL*) in seconds per day. The data can also be filtered temporally. The *"Date Range"* enables you to select a beginning and ending date. The *"Calendar Year"* and *"Month"* can also be selected using the dropdown menu to further refine the temporal range. Calendar year is January 1 to December 31. Multiple calendar year and/or month selections can be made and subsequently removed by using backspace. If date range and calendar year are both selected, the calendar year must fall within the established range. An error message will be displayed if this occurs, which you can dismiss. No data will be displayed or queried from the database until the **_Retrieve and View Data_** button is pressed. The **_Reset Filters_** button will clear all selected variables and values. 
+Variable abbreviations and units are: precipitation (*PRCP*) in millimeters per day, mean air temperature (*TAIR*), minimum air temperature (*TMIN*), and maximum air temperature (*TMAX*) in degrees Celcius, potential evapotranspiration (*PET*) in millimeters per day, actual evapotranspiration (*AET*) in millimeters per day, stream discharge (*OBSQ*) in millimeters per day, snow water equivalent (*SWE*) in  millimeters per day, shortwave radiation (*SRAD*) in watts per square meter, water vapor pressure (*VP*) Pascals, and day length (*DAYL*) in seconds per day. The data can also be filtered temporally under *"Select Time Period(s)"*. The *Date Range* enables you to select a beginning and ending date. The *Calendar Year* and *Month* can also be selected using the dropdown menu to further refine the temporal range. Calendar year is January 1 to December 31. Multiple calendar year and/or month selections can be made and subsequently removed by using backspace. If date range and calendar year are both selected, the calendar year must fall within the established range. An error message will be displayed if this occurs, which you can dismiss. No data will be displayed or queried from the database until the **_Retrieve and View Data_** button is pressed. The **_Reset Filters_** button will clear all selected variables and values. 
 
 
 <img width="254" height="726" alt="Image" src="https://github.com/user-attachments/assets/e161f508-ae76-4fbb-8581-e2cc48e7c129" />
 
-<i>Figure 11: Available climate variables in MACH. Daily data can be filtered by value range, date range, calendar year, and/or calendar month.</i>
+<i>Figure 12: Available climate variables in MACH. Daily data can be filtered by value range, date range, calendar year, and/or calendar month.</i>
 <br></br>
 
-The **"Filtered Daily Data"** table header will show the selected number of sites (*Figure 12*). If this number is not consistent with the **Site Selection** tab, make sure you have pressed the **_Retrieve and View Data_** button again to update the query. 
+The **"Filtered Daily Data"** table header will show the selected number of sites (*Figure 13*). If this number is not consistent with the **Site Selection** tab, make sure you have pressed the **_Retrieve and View Data_** button again to update the query. 
 The table will display the selected variables and specified filters for the first 1,000 records only. All data will be available upon download. If you want to view data for a specific site before downloading, select that single site on the **Site Selection** tab. Again, 
-only the first 1,000 records will be available for preview. The data preview is limited for this tab due to the large volume of available data (+16 million rows). 
+only the first 1,000 records will be available for preview. The data preview is limited for this tab due to the large volume of available data (+16 million rows). If any streamflow data are missing, the cells in the OBSQ column will be blank and availability will correspond
+to the **"Discharge Data"** results displayed on the **Site Selection** tab. Missing values in the downloaded csv files are indicated by NA. If ranges for selected variables are not applicable, the table will return *No data available in table*. 
 
 
 <img width="3198" height="2487" alt="Image" src="https://github.com/user-attachments/assets/3a2d4dd6-397e-4b46-900f-5e20f9e9b99f" />
+<i>Figure 13: Data preview for selected sites and variable(s). The table will always include the SITENO and DATE columns. </i>
+<br></br>
+
+Since the data preview is limited to 1,000 rows, the **"Data Summary"** table displays the selected sites and the number of rows (days) of data that will be returned upon download. In the example shown in *Figure 14*, precipitation was selected along with January for the 
+entire period of record (1980 to 2023). Every January over a 44-year period is 1,364 days. 
 
 
+<img width="456" height="723" alt="Image" src="https://github.com/user-attachments/assets/72eaeda6-c039-4632-ac53-79c2cb23f53e" />
+
+<i>Figure 14: Data available for the selected sites.</i>
+<br></br>
+
+Each data tab has two download options as shown in *Figure 15*. The exported data will match what is depicted in the filtered table (SITENO, DATE, and variable columns). If more than one watershed is selected from the **Site Selection** tab, the **_Export as csv_** button will download all data as one single csv file, with each basin appended at the end of a previous basin's record. The exported data file naming convention is MACH_time_YYYY_MM_DD with the four-digit year, month, and day of the current date. The time corresponds to the tab name, either daily, monthly, or annual. If you would like to download data for each watershed separately, the **_Export as separate csv files_** button will result in a zip file containing individual csv files. The zip file naming convention is MACH_time_YYYY_MM_DD and once extracted, will contain individual csv files, MACH_time_00000000.csv, where the zeroes represent the 8-digit site number. 
+
+<img width="456" height="192" alt="Image" src="https://github.com/user-attachments/assets/b1eb05f1-b9d9-483a-a6ae-cda787ff3986" />
+
+<i>Figure 15: Download options for time series data.</i>
+<br></br>
+
+A progress message will be displayed while data is downloading (*Figure 16*). Note that larger amounts of data may take a few minutes. Please wait until the download is complete before moving to a new query or tab, otherwise, the app may freeze. All csv files will contain SITENO as the first column (character) and DATE (MM/DD/YYYY) as the second, followed by selected variables. <ins>All data tabs are independent of each other, meaning that the variables and filters selected on one tab, for example daily, will not carry over to monthly or annual</ins>. 
 
 
+<img width="404" height="111" alt="Image" src="https://github.com/user-attachments/assets/e6a510ed-3c51-445e-b8bc-8dcd11434a69" />
+
+<i>Figure 16: Progress message during zip file creation.</i>
+<br></br>
+
+#### Monthly Data
+The **Monthly Data** tab contains all climate variables and temporal filters. Rather than a range of values for each variable, you have a choice of *Minimum*, *Maximum*, *Median*, *Mean*, or *Total*, shown in *Figure 17* in the **"Select Statistic"** box. Only one option can be selected at a time. The default is *Mean*. All statistics are based on the daily values over a month. For example, if *Maximum* is selected for precipitation, the maximum daily precipitation value for each individual month, January to December, will be returned for each calendar year. If *Total* is selected, all temperature variables will return the mean value. 
+
+<img width="496" height="251" alt="Image" src="https://github.com/user-attachments/assets/0c7a5532-bde1-4983-b1ec-dd7a2e52ff12" />
+
+<i>Figure 17: Statistics for monthly data. Includes minimum, maximum, median, mean, or total of daily values.</i>
+<br></br>
+
+Data can also be filtered by *Calendar Year* and/or *Month* under *"Select Time Period(s)"* as shown in *Figure 18*. The **"Filtered Monthly Data"** table will show all data returned and includes SITENO, YEAR, and MONTH columns along with any selected variables. These columns are what will be returned in downloaded monthly data. 
+
+<img width="994" height="718" alt="Image" src="https://github.com/user-attachments/assets/8f222f81-058d-4fa2-9637-c339b679304a" />
+<i>Figure 18: Monthly data tabe with statistic options, variables, temporal filters, and table display.</i>
+<br></br>
 
 
+#### Annual Data 
+The **Annual Data** tab is similar to **Monthly Data**, except an *"Annual Aggregation"* option must be selected, either *Water Year* or *Calendar Year*, as shown in *Figure 19*. The default selection is *Water Year*. A water year begins on October 1 and ends on 
+September 30 of the following year, for example, water year 1981 begins on October 1, 1980 and ends on September 30, 1981. The *"Select Statistic*" default is *Mean*. 
+
+<img width="614" height="242" alt="Image" src="https://github.com/user-attachments/assets/c7c24fb9-2607-45fa-8a31-4de466ca8fe3" />
+
+<i>Figure 19: Annual aggregation selection.</i>
+<br></br>
+
+The **Annual Data** dashboard is shown in *Figure 20*. 
+
+<img width="898" height="718" alt="Image" src="https://github.com/user-attachments/assets/2fbdf354-df43-4d12-9917-f7066adf5f17" />
+
+<i>Figure 20: Annual Data dashboard.</i>
+<br></br>
+
+
+Annual data can be filtered by year under *"Select Time Period(s)*", which will reflect the aggregation option selected under *"Annual Aggregation"* (*Figure 21*). Water year options do not include 1980 since the data begins
+on January 1 1980. Water year 2023 ends on September 30, 2023. 
+
+<img width="490" height="620" alt="Image" src="https://github.com/user-attachments/assets/b28936c3-e54a-4496-a08a-782568b44b50" />
+
+<i>Figure 21: Annual temporal filter.</i>
+<br></br>
+
+### MOPEX Data 
+MACH Explorer also enables retrieval of MOPEX data from the 395 basins within MACH also identified in the [MOPEX dataset](https://iahs.info/uploads/dms/13600.04-9-28-SCHAAKE.pdf). If any filtered watersheds from the **Site Selection** tab are labelled as MOPEX
+in the *site_info.csv* (available on zenodo), they will appear on the **MOPEX Data** tab (*Figure 22*). In the example below, only 2 watersheds in Arizona (out of the 17 total sites) are also in MOPEX. The **"Stream Discharge Record"** is the same as the **"Discharge Record"** table, except it displays the total number of streamflow records per calendar year for the MOPEX sites (1948 to 1979). A complete record will have 11,688 days.  
+
+<img width="1286" height="346" alt="Image" src="https://github.com/user-attachments/assets/5e6007f6-c164-4692-a37e-be16b5c41861" />
+
+<i>Figure 22: MOPEX Data dashboard.</i>
+<br></br>
+
+There are two export options, shown in *Figure 23*. *MOPEX only* will download available stream discharge, precipitation, minimum temperature and maximum temperature for January 1, 1948 to December 31, 1979 for all identified MOPEX basins selected on the **Site Selection** tab. *MOPEX & MACH* will automatically append the MACH data beginning January 1, 1980 through to December 31, 2023 for stream discharge, precipitation, minimum temperature, and maximum temperature. Note that MOPEX data may have missing values for any variables.   
+
+<img width="602" height="173" alt="Image" src="https://github.com/user-attachments/assets/572fc540-e591-4114-b48b-de8177ccae98" />
+
+<i>Figure 23: MOPEX Data dashboard.</i>
+<br></br>
+
+The table results will not change based on the export option. After the export option is chosen, make sure to press the **_Retrieve and Confirm Data_* button to query the database. A confirmation message will be displayed that reflects the export option. If you change the export option, make sure to press the **_Retrieve and Confirm Data_** button again. 
+
+For *MOPEX only* data, the message will indicate that MOPEX only data retrieved (*Figure 24*), while the *MOPEX & MACH* option will indicate that MACH data has been appended (*Figure 25*). 
+
+<img width="484" height="331" alt="Image" src="https://github.com/user-attachments/assets/0fc998c2-b598-450d-9079-49f56c278605" />
+
+<i>Figure 24: MOPEX only confirmation message.</i>
+<br></br>
+
+<img width="484" height="353" alt="Image" src="https://github.com/user-attachments/assets/505625af-dc9a-4321-b934-347d0221c5c0" />
+
+<i>Figure 25: MOPEX & MACH data confirmation message.</i>
+<br></br>
+
+When the data is downloaded, the file naming convention for **_Export as csv_** is MOPEX_YYYY_MM_DD.csv, and for **_Export as separate csv files_**. The zip file will be MOPEX_YYYY_MM_DD.zip and the individual csv files will be MOPEX_00000000.csv where the zeroes
+represent the 8-digit site number. The first column of the csv file will be SITENO (character), followed by DATE (MM/DD/YYYY), OBSQ (streamflow), PRCP (precipitation), TMAX (maximum air temperature), and TMIN (minimum air temperature). 
+
+### Attributes
+MACH Explorer also includes catchment attributes and you can select according to the number of attributes (single, monthly, or annual) and type. The retrieved attributes pertain only to the filtered sites from the **Site Selection** tab. Only one attribute type can be selected at a time under *"Select Attribute Type"*. Selected attributes will display in the **"Selected Attributes"** table with the SITENO as the first column followed by any selections. The table header will update based on the attribute type (single, monthly, annual). The **_Retrieve Attributes_** button must be pressed if any attribute selections are changed. A detailed README file with attribute descriptions is located on zenodo. The options available in the drop-down menus correspond to the column names in the various attribute tables (i.e. climate, soil, geology). A portion of the README file is shown in *Figure 26*. The file name correlates with the attribute type, for example, overall_climate is *Climate* under the overall (single attribute per site) option. 
+
+<img width="1280" height="674" alt="Image" src="https://github.com/user-attachments/assets/3f7f22fd-1b2d-4b35-9267-07aa003edd11" />
+
+<i>Figure 26: Screenshot of a portion of the README file contents.</i>
+<br></br>
+
+*Single Value per Site* display attributes that have one overall value (*Figure 27*). These categories under *"Select Overall Site Attribute(s)"* include *Catchment*, *Climate*, *Hydrology*, *Soil*, *Geology*, *Regional*, and *Anthropogenic*. 
+
+<img width="1094" height="717" alt="Image" src="https://github.com/user-attachments/assets/3980c078-a29c-4dd6-8c4a-422cac38f0ba" />
+
+<i>Figure 27: Single value per site for overall attributes.</i>
+<br></br>
+
+The *Monthly Value per Site* option pertains to climate attributes calculated using daily MACH data. The table for monthly attributes includes SITENO and MONTH columns, followed by attribute selections (*Figure 28*). 
+ 
+<img width="1286" height="540" alt="Image" src="https://github.com/user-attachments/assets/89dd6b8c-c5dc-4956-8dd1-887be9fe873d" />
+
+<i>Figure 28: Monthly value per site for monthly climate attributes.</i>
+<br></br>
+
+The *Annual Value per Site* option pertains to climate attributes calculated using daily MACH data (*Figure 29*). 
+
+<img width="1286" height="544" alt="Image" src="https://github.com/user-attachments/assets/8be8e5b2-1850-4a71-85f4-13e61c395fd1" />
+
+<i>Figure 29: Monthly value per site for monthly climate attributes.</i>
+<br></br>
+
+The **"Download Attributes"** option will change based on the attribute type selection. All export buttons will download a single csv file that resembles the table output shown in the dashboard. The file naming convention is MACH_att_YYYY_MM_DD.csv for overall site attributes, MACH_monthly_att_YYYY_MM_DD.csv for monthly attributes, and MACH_annual_att_YYYY_MM_DD.csv for annual attributes. 
