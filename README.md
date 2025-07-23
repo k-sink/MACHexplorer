@@ -31,7 +31,7 @@ To start the MACH Explorer, locate the installation directory and double-click `
 - **Keeping the Command Window Open**: Do not close the Command Prompt window while using the app, as this will stop the app. To exit, simply close the browser window or click the "Stop" button if provided, then close the Command Prompt window.
 - **Troubleshooting**: If the browser doesn’t open or the "listening..." message doesn’t appear, ensure all files are correctly installed and try running `run.bat` again. Check the Command Prompt for any error messages if issues persist.
 <img width="1111" height="251" alt="Image" src="https://github.com/user-attachments/assets/9bf03e0a-e4b2-4351-bab6-f52d6db2b9c9" />
-<i>Figure 1: Command prompt window that connects to Chrome browser.</i> 
+<i>Figure 1: Command prompt window that connects to Chrome browser and launches the R script.</i> 
 
 ## Getting Started
 Users can browse and retrieve time series and/or attribute data for up to 1,014 catchments. 
