@@ -291,3 +291,5 @@ The MACH Explorer uses data and software downloaded from the following sources:
 - **NHDPlus Version 2.1**: [National Hydrography Dataset](https://www.sciencebase.gov/catalog/item/5669a79ee4b08895842a1d47) - catchment attributes.
 - **MRLC**: [Multi-Resolution Land Characteristics Consortium](https://www.mrlc.gov/) - land cover.
 - **NID**: [US Army Corps of Engineers National Inventory of Dams](https://nid.sec.usace.army.mil/#/) - dam attributes. 
+
+- **MACH**: https://zenodo.org/records/16414465
