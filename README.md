@@ -1,12 +1,12 @@
 # MACH Explorer 
 
 ## Overview
-The MACH Explorer is a desktop application that enables users to evaluate and manipulate the MACH dataset. Developed by Katharine Sink, it leverages [Shiny](https://shiny.posit.co/) 
+The **MACH Explorer** is a desktop application that enables users to evaluate and manipulate the MACH dataset. Developed by Katharine Sink, it leverages [Shiny](https://shiny.posit.co/) 
 for an interactive interface. The MACH dataset is available at [zenodo](https://zenodo.org/records/15311986). This dataset contains daily climate data along with catchment attributes for 1,014 watersheds within the United States. Climate forcing data includes precipitation, 
 minimum air temperature, maximum air temperature, mean air temperature, snow water equivalent, shortwave radiation, water vapor pressure, day length, potential evapotranspiration, and actual evapotranspiration. 
 Hydrological data includes daily observed streamflow. Data coverage spans from January 1, 1980 to December 31, 2023. Catchment attribute categories are land cover, hydrology, geology, soil, regional, climate indices, 
 and anthropogenic. MOPEX data is also included for 395 of the watersheds for January 1, 1948 to December 31, 1979 for precipitation, minimum and maximum air temperature, and observed streamflow. Basin identifiers are 
-consist with the MOPEX and CAMELS datasets, based on USGS stream gaging stations.  
+consist with the MOPEX and CAMELS datasets, based on USGS stream gauging stations.  
 
 ## Installation
 1. Download the `MACH_Explorer_Installer.exe` from the [GitHub releases page](https://github.com/k-sink/MACHexplorer/releases).
@@ -26,10 +26,10 @@ This project is licensed under the MIT License - see the `LICENSE` file for deta
 
 ## Usage
 To start the MACH Explorer, locate the installation directory and double-click `run.bat` or double-click the desktop shortcut if you elected to create one during app installation. 
-- **What You’ll See**: When you run `run.bat`, a black Command Prompt window will appear with a message like "listening..." (*Figure 1*). This indicates that the app is starting and preparing to display its interface. The window must remain open for the app to work.
+- **What You’ll See**: When you run `run.bat`, a black Command Prompt window will appear with a message like "Listening..." (*Figure 1*). This indicates that the app is starting and preparing to display its interface. The window must remain open for the app to work.
 - **Browser Opening**: After a moment, the app will open in a web browser window (using a built-in Chrome instance). You can begin using the app from there.
 - **Keeping the Command Window Open**: Do not close the Command Prompt window while using the app, as this will stop the app. To exit, simply close the browser window or click the "Stop" button if provided, then close the Command Prompt window.
-- **Troubleshooting**: If the browser doesn’t open or the "listening..." message doesn’t appear, ensure all files are correctly installed and try running `run.bat` again. Check the Command Prompt for any error messages if issues persist.
+- **Troubleshooting**: If the browser doesn’t open or the "Listening..." message doesn’t appear, ensure all files are correctly installed and try running `run.bat` again. Check the Command Prompt for any error messages if issues persist.
 <img width="1111" height="251" alt="Image" src="https://github.com/user-attachments/assets/9bf03e0a-e4b2-4351-bab6-f52d6db2b9c9" />
 <i>Figure 1: Command prompt window that connects to Chrome browser and launches the R script.</i> 
 
@@ -38,6 +38,7 @@ Users can browse and retrieve time series and/or attribute data for up to 1,014 
 1. Connect the app to the database file on the **Data Import** tab. 
 2. Select sites on the **Site Selection** tab. All tabs in the app retrieve data for the sites selected here. 
 3. After selecting sites, any of the following tabs can be used, independently of the others. Retrieve time series data for selected sites using the **Daily Data**, **Monthly Data**, and/or **Annual Data** tabs. Retrieve attribute data for selected sites using the **Attributes** and/or **Land Cover** tabs. Retrieve original MOPEX data for selected sites using the **MOPEX Data** tab. Note that the **_Retrieve and View Data_** buttons essentially query the database and must be pressed any time changes are made to filtering criterion or to site selections. 
+<br></br>
 
 ### Data Import
 The app uses a database management system called [DuckDB](https://duckdb.org/), which is portable and provides APIs for languages such as R. Prior to using the app, 
@@ -62,7 +63,7 @@ Sites selections are retained throughout the application.</ins> The dashboard co
 in real time as filters are adjusted and represent the sites that will be used for data retrieval on subsequent tabs. 
 
 <img width="1030" height="726" alt="Image" src="https://github.com/user-attachments/assets/04bf3eaa-e8d2-4a96-a1f1-def3ed1f9141" />
-<i>Figure 4: Site Selection user interface.</i>
+<i>Figure 4: Site Selection dashboard.</i>
 <br></br>
 
 The **"Filter Sites"** box, *Figure 5*, contains spatial filters. To enable a selection, click in the checkbox. Clicking on the *State* box will display a drop-down menu. To select a state, click the name to add and to remove, click in the box and then use backspace. More than one state can be selected at a time. Slider bars can be used to determine a range of values for each numeric attribute, once it is selected. The ranges default to cover all possible values on record. *Latitude (N)* is decimal degrees north, *Longitude (W)* is decimal degrees west, *Mean Elevation (m)* is mean elevation above sea level in meters, *Drainage Area (km2)* is basin drainage area in square kilometers, and *Mean Slope (percent)* is overall mean basin slope in percent. The **_Reset Filters_** button will clear all selected filters and display all 1,014 sites. This button can be pressed at any time. 
@@ -74,7 +75,7 @@ The **"Filter Sites"** box, *Figure 5*, contains spatial filters. To enable a se
 
 
 Individual sites can be added or removed based on user preference using the **"Edit Individual Sites"** box. For example, if a watershed is missing streamflow data for a specific period, it can be deleted from the selections using the 8-digit site number, shown in *Figure 6*. To remove a site, manually type the site number into the bottom box and then click the **_Remove Site_** button. To add a site, manually type the site number into the top box and then click the **_Add Site_** button. Leading zeroes should be included, if applicable 
-to the site number. The **_Remove All Sites_** button will clear all selections, resulting in a blank display and tables. Individual sites can then be manually added. The **"Edit Individual Sites"** box lets you choose exactly which basins you want to obtain data from.
+to the site number. The **_Remove All Sites_** button will clear all selections, resulting in a blank display and tables. Individual sites can then be manually added. The **"Edit Individual Sites"** box lets you customize exactly which basins you want to obtain data from.
 
 <img width="459" height="467" alt="Image" src="https://github.com/user-attachments/assets/a0840430-4646-4a6c-84c7-cf4696db4abb" />
 
@@ -82,8 +83,7 @@ to the site number. The **_Remove All Sites_** button will clear all selections,
 <br></br>
 
 
-The leaflet map **"USGS Station Locations"** displays the sites listed in the **"Selected Sites"** table and updates as filtering criterion are changed. The blue points represent the USGS stream gauging station locations. The default base map is *OpenStreetMap*, which includes geographical features such as roads, buildings, and trails. The basemap can be changed to *EsriTopo*, which provides labelled topographic contours and hillshade. Basin delineations can be toggled on and off by checking the *Basin Delineations* box. 
-can be displayed by clicking the checkbox (*Figure 7*). The polygons represent the basin drainage area. 
+The leaflet map **"USGS Station Locations"** displays the sites listed in the **"Selected Sites"** table and updates as filtering criterion are changed. The blue points represent the USGS stream gauging station locations. The default base map is *OpenStreetMap*, which includes geographical features such as roads, buildings, and trails. The basemap can be changed to *EsriTopo*, which provides labelled topographic contours and hillshade. Basin delineations can be toggled on and off by checking the *Basin Delineations* box (*Figure 7*). The polygons represent the basin drainage area. 
 
 <img width="3213" height="1646" alt="Image" src="https://github.com/user-attachments/assets/d64002b3-1799-4f74-85f0-09d1238448fb" />
 <i>Figure 7: USGS stream gauging site locations along with basemap options.</i>
@@ -105,8 +105,8 @@ and the number of streamflow records for each calendar year. Leap years will con
 <i>Figure 9: Streamflow records per site. The number of displayed records can be changed using the dropdown (5, 10, 20, 50). The search bar allows numbers and characters. Columns can be ordered using the diamond buttons near the header.</i>
 <br></br>
 
-The **"Selected Sites"** table displays sites based on **"Filter Sites"** and **"Edit Individual Sites"** information. The table includes the USGS site number (*SITENO*), site name (*NAME*), state (*STATE*), latitude in decimal degrees north (*LAT*), longitude
-in decimal degrees west (*LONG*), mean elevation in meters above sea level (*ELEV*), basin drainage area in square kilometers (*AREA*), and overall mean basin slope (*SLOPE*) in percent (*Figure 10*). 
+The **"Selected Sites"** table (*Figure 10*) displays sites based on **"Filter Sites"** and **"Edit Individual Sites"** information. The table includes the USGS site number (*SITENO*), site name (*NAME*), state (*STATE*), latitude (*LAT*), longitude
+(*LONG*), mean elevation (*ELEV*), basin drainage area (*AREA*), and overall mean basin slope (*SLOPE*). 
 
 <img width="930" height="723" alt="Image" src="https://github.com/user-attachments/assets/60109517-1464-49cd-a5c4-0ab59362de1c" />
 
@@ -114,9 +114,9 @@ in decimal degrees west (*LONG*), mean elevation in meters above sea level (*ELE
 <br></br>
 
 ### Daily, Monthly, and Annual Data
-Once the filtered basin selections are made, you have the option to evaluate data at the daily, monthly, and/or annual scale. 
+Once the filtered basin selections are made, you have the option to evaluate time series at the daily, monthly, and/or annual scale. 
 
-#### Daily Data
+#### DAILY DATA
 The **Daily Data** dashboard is shown in *Figure 11*. 
 
 <img width="928" height="717" alt="Image" src="https://github.com/user-attachments/assets/3fcdab35-6546-4e00-98fb-0be273f2e473" />
@@ -126,7 +126,7 @@ The **Daily Data** dashboard is shown in *Figure 11*.
 
 For daily data, shown in *Figure 12*, each variable can be filtered by a range of values after the variable is selected. 
 To select a variable, check the box under *"Select Variable(s)"*. Once selected, minimum and maximum value boxes will be displayed. If you want all possible values, you do not need to make any adjustments. The default values cover the range among the 1,014 sites. 
-Variable abbreviations and units are: precipitation (*PRCP*) in millimeters per day, mean air temperature (*TAIR*), minimum air temperature (*TMIN*), and maximum air temperature (*TMAX*) in degrees Celcius, potential evapotranspiration (*PET*) in millimeters per day, actual evapotranspiration (*AET*) in millimeters per day, stream discharge (*OBSQ*) in millimeters per day, snow water equivalent (*SWE*) in  millimeters per day, shortwave radiation (*SRAD*) in watts per square meter, water vapor pressure (*VP*) Pascals, and day length (*DAYL*) in seconds per day. The data can also be filtered temporally under *"Select Time Period(s)"*. The *Date Range* enables you to select a beginning and ending date. The *Calendar Year* and *Month* can also be selected using the dropdown menu to further refine the temporal range. Calendar year is January 1 to December 31. Multiple calendar year and/or month selections can be made and subsequently removed by using backspace. If date range and calendar year are both selected, the calendar year must fall within the established range. An error message will be displayed if this occurs, which you can dismiss. No data will be displayed or queried from the database until the **_Retrieve and View Data_** button is pressed. The **_Reset Filters_** button will clear all selected variables and values. 
+Variable abbreviations and units are: precipitation (*PRCP*) in millimeters per day, mean air temperature (*TAIR*), minimum air temperature (*TMIN*), and maximum air temperature (*TMAX*) in degrees Celsius, potential evapotranspiration (*PET*) in millimeters per day, actual evapotranspiration (*AET*) in millimeters per day, stream discharge (*OBSQ*) in millimeters per day, snow water equivalent (*SWE*) in  millimeters per day, shortwave radiation (*SRAD*) in watts per square meter, water vapor pressure (*VP*) Pascals, and day length (*DAYL*) in seconds per day. The data can also be filtered temporally under *"Select Time Period(s)"*. The *Date Range* enables you to select a beginning and ending date. The *Calendar Year* and *Month* can also be selected using the dropdown menu to further refine the temporal range. *Calendar Year* is January 1 to December 31. Multiple *Calendar Year* and/or *Month* selections can be made and subsequently removed by using backspace. If *Date Range* and *Calendar Year* are both selected, the year must fall within the established range. An error message will be displayed if this occurs, which you can dismiss. No data will be displayed or queried from the database until the **_Retrieve and View Data_** button is pressed. The **_Reset Filters_** button will clear all selected variables and values. 
 
 
 <img width="254" height="726" alt="Image" src="https://github.com/user-attachments/assets/e161f508-ae76-4fbb-8581-e2cc48e7c129" />
@@ -153,7 +153,7 @@ entire period of record (1980 to 2023). Every January over a 44-year period is 1
 <i>Figure 14: Data available for the selected sites.</i>
 <br></br>
 
-Each data tab has two download options as shown in *Figure 15*. The exported data will match what is depicted in the filtered table (SITENO, DATE, and variable columns). If more than one watershed is selected from the **Site Selection** tab, the **_Export as csv_** button will download all data as one single csv file, with each basin appended at the end of a previous basin's record. The exported data file naming convention is MACH_time_YYYY_MM_DD with the four-digit year, month, and day of the current date. The time corresponds to the tab name, either daily, monthly, or annual. If you would like to download data for each watershed separately, the **_Export as separate csv files_** button will result in a zip file containing individual csv files. The zip file naming convention is MACH_time_YYYY_MM_DD and once extracted, will contain individual csv files, MACH_time_00000000.csv, where the zeroes represent the 8-digit site number. 
+Each time series data tab has two download options as shown in *Figure 15*. The exported daily data will match what is depicted in the filtered table (SITENO, DATE, and variable columns). If more than one watershed is selected from the **Site Selection** tab, the **_Export as csv_** button will download all data as one single csv file, with each basin appended at the end of a previous basin's record. The exported data file naming convention is MACH_time_YYYY_MM_DD with the four-digit year, month, and day of the current date. The time corresponds to the tab name, either daily, monthly, or annual. If you would like to download data for each watershed separately, the **_Export as separate csv files_** button will result in a zip file containing individual csv files. The zip file naming convention is MACH_time_YYYY_MM_DD.zip and once extracted, will contain individual csv files, MACH_time_00000000.csv, where the zeroes represent the 8-digit site number. 
 
 <img width="456" height="192" alt="Image" src="https://github.com/user-attachments/assets/b1eb05f1-b9d9-483a-a6ae-cda787ff3986" />
 
@@ -168,22 +168,22 @@ A progress message will be displayed while data is downloading (*Figure 16*). No
 <i>Figure 16: Progress message during zip file creation.</i>
 <br></br>
 
-#### Monthly Data
-The **Monthly Data** tab contains all climate variables and temporal filters. Rather than a range of values for each variable, you have a choice of *Minimum*, *Maximum*, *Median*, *Mean*, or *Total*, shown in *Figure 17* in the **"Select Statistic"** box. Only one option can be selected at a time. The default is *Mean*. All statistics are based on the daily values over a month. For example, if *Maximum* is selected for precipitation, the maximum daily precipitation value for each individual month, January to December, will be returned for each calendar year. If *Total* is selected, all temperature variables will return the mean value. 
+#### MONTHLY DATA
+The **Monthly Data** tab contains all climate variables and temporal filters. Rather than a range of values for each variable, you have a choice of *Minimum*, *Maximum*, *Median*, *Mean*, or *Total*, shown in *Figure 17* in the **"Select Statistic"** box. Only one option can be selected at a time. The default is *Mean*. All statistics are based on the daily values over a month. For example, if *Maximum* is selected for precipitation, the maximum daily precipitation value for each individual month, January to December, will be returned for each calendar year. If *Total* is selected, all temperature variables will return the mean value.  
 
 <img width="496" height="251" alt="Image" src="https://github.com/user-attachments/assets/0c7a5532-bde1-4983-b1ec-dd7a2e52ff12" />
 
 <i>Figure 17: Statistics for monthly data. Includes minimum, maximum, median, mean, or total of daily values.</i>
 <br></br>
 
-Data can also be filtered by *Calendar Year* and/or *Month* under *"Select Time Period(s)"* as shown in *Figure 18*. The **"Filtered Monthly Data"** table will show all data returned and includes SITENO, YEAR, and MONTH columns along with any selected variables. These columns are what will be returned in downloaded monthly data. 
+Data can also be filtered by *Calendar Year* and/or *Month* under *"Select Time Period(s)"* as shown in *Figure 18*. The **"Filtered Monthly Data"** table will show all data returned and includes SITENO, YEAR, and MONTH columns along with any selected variables. These columns are what will be returned in downloaded monthly data csv files. 
 
 <img width="994" height="718" alt="Image" src="https://github.com/user-attachments/assets/8f222f81-058d-4fa2-9637-c339b679304a" />
 <i>Figure 18: Monthly data tabe with statistic options, variables, temporal filters, and table display.</i>
 <br></br>
 
 
-#### Annual Data 
+#### ANNUAL DATA
 The **Annual Data** tab is similar to **Monthly Data**, except an *"Annual Aggregation"* option must be selected, either *Water Year* or *Calendar Year*, as shown in *Figure 19*. The default selection is *Water Year*. A water year begins on October 1 and ends on 
 September 30 of the following year, for example, water year 1981 begins on October 1, 1980 and ends on September 30, 1981. The *"Select Statistic*" default is *Mean*. 
 
@@ -224,7 +224,7 @@ There are two export options, shown in *Figure 23*. *MOPEX only* will download a
 <i>Figure 23: MOPEX Data dashboard.</i>
 <br></br>
 
-The table results will not change based on the export option. After the export option is chosen, make sure to press the **_Retrieve and Confirm Data_* button to query the database. A confirmation message will be displayed that reflects the export option. If you change the export option, make sure to press the **_Retrieve and Confirm Data_** button again. 
+The table results will not change based on the export option. After the export option is chosen, make sure to press the **_Retrieve and Confirm Data_** button to query the database. A confirmation message will be displayed that reflects the export option. If you change the export option, make sure to press the **_Retrieve and Confirm Data_** button again. 
 
 For *MOPEX only* data, the message will indicate that MOPEX only data retrieved (*Figure 24*), while the *MOPEX & MACH* option will indicate that MACH data has been appended (*Figure 25*). 
 
@@ -270,4 +270,24 @@ The *Annual Value per Site* option pertains to climate attributes calculated usi
 <i>Figure 29: Monthly value per site for monthly climate attributes.</i>
 <br></br>
 
-The **"Download Attributes"** option will change based on the attribute type selection. All export buttons will download a single csv file that resembles the table output shown in the dashboard. The file naming convention is MACH_att_YYYY_MM_DD.csv for overall site attributes, MACH_monthly_att_YYYY_MM_DD.csv for monthly attributes, and MACH_annual_att_YYYY_MM_DD.csv for annual attributes. 
+The **"Download Attributes"** option name will change based on the attribute type selection. All export buttons will download a single csv file that resembles the table output shown in the dashboard. The file naming convention is MACH_att_YYYY_MM_DD.csv for overall site attributes, MACH_monthly_att_YYYY_MM_DD.csv for monthly attributes, and MACH_annual_att_YYYY_MM_DD.csv for annual attributes. 
+
+### Land Cover
+The **Land Cover** tab retrieves land cover data for the selected sites (*Figure 30*). Available data begins in 1985 and ends in 2023. Values are percent coverage by basin area and all 16 classes will equal 100 percent. Specific years can be retrieved using *"Select Calendar Year(s)"* and 16 specific classes using *"Select Land Cover Class(es)"*, which represent the modified Anderson Level II classification system (Anderson et al., 1976). The **_Retrieve Land Cover Data_** button must be pressed each time the filters are changed. The results are displayed in the **"Land Cover Data"** table and include SITENO, YEAR, and the selected land cover classes. 
+
+<img width="1286" height="544" alt="Image" src="https://github.com/user-attachments/assets/005fa4a4-d6f5-4fdb-8d3a-b7cae2778c24" />
+
+<i>Figure 30: Land Cover Data dashboard.</i>
+<br></br>
+
+## Documentation
+The MACH Explorer uses data and software downloaded from the following sources:
+- **R**: [The R Project for Statistical Computing](https://www.r-project.org/) version 4.3.3. (Angel Food Cake). 
+- **Chrome**: [Google Chrome Portable](https://portableapps.com/apps/internet/google_chrome_portable).
+- **Daymet**: [Daymet Version 4](https://daymet.ornl.gov/) - climate variables (precipitation, minimum air temperature, maximum air temperature, snow water equivalent, vapor pressure, solar radiation, day length) for January 1, 1980 to December 31, 2023.
+- **GLEAM4**: [Global Land Evaporation Amsterdam Model](https://www.gleam.eu/) - climate variables (actual evapotranspiration, potential evapotranspiration) for January 1, 1980 to December 31, 2023.
+- **MOPEX**: [Model Parameter Estimation Experiment](https://doi.org/10.1016/j.jhydrol.2005.07.054) - climate variables (precipitation, minimum air temperature, maximum air temperature), streamflow for January 1, 1948 to December 31, 1979.
+- **USGS NWIS**: [United States Geological Survey National Water Information System](https://waterdata.usgs.gov/nwis/rt) - streamflow data January 1, 1980 to December 31, 2023.
+- **NHDPlus Version 2.1**: [National Hydrography Dataset](https://www.sciencebase.gov/catalog/item/5669a79ee4b08895842a1d47) - catchment attributes.
+- **MRLC**: [Multi-Resolution Land Characteristics Consortium](https://www.mrlc.gov/) - land cover.
+- **NID**: [US Army Corps of Engineers National Inventory of Dams](https://nid.sec.usace.army.mil/#/) - dam attributes. 
