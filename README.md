@@ -64,9 +64,9 @@ Users can browse and retrieve time series and/or attribute data for up to 1,014 
 <br></br>
 
 ### Data Import
-The app uses a database management system called [DuckDB](https://duckdb.org/), which is portable and provides APIs for languages such as R. Prior to using the app, 
-download the `full_dataset.duckdb` database file from the [Github releases page](https://github.com/k-sink/MACHexplorer/releases). When the app is launched, it will open on the **Data Import** tab (*Figure 2*). Use the **_Browse_** button to locate the database file on 
-your local machine. The database file contains the same information available in the zenodo release.  
+The app uses a database management system called [DuckDB](https://duckdb.org/), which is portable and provides APIs for languages such as R. Prior to using the app, download the `full_dataset.duckdb` database file 
+from the [Github releases page](https://github.com/k-sink/MACHexplorer/releases). The database file contains the same information available in the zenodo release, consolidated for efficient querying.  When the app is launched, it will open 
+on the **Data Import** tab (*Figure 2*). Use the **_Browse_** button to locate the database file on your local machine. 
 
 <img width="1286" height="464" alt="Image" src="https://github.com/user-attachments/assets/322b8729-cd46-4734-8682-073d4dd8f250" />
 <i>Figure 2: Data Import landing page.</i> 
