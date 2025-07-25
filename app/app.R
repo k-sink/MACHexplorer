@@ -102,20 +102,117 @@ ui <- bslib::page_navbar(
           cursor: not-allowed;
         }
         
-        
+      /* Custom panel wrapper and footer styling */
+        .panel-wrapper {
+          min-height: calc(100vh - 100px); /* Adjust based on navbar and footer height */
+          padding-bottom: 60px; /* Space for footer */
+          position: relative;
+        }
+
+        .panel-footer {
+          position: absolute;
+          bottom: 0;
+          width: 100%;
+          background-color: #000000; /* Matches navbar */
+          color: #FFFFFF;
+          padding: 10px;
+          text-align: center;
+          font-family: 'Roboto', sans-serif;
+          font-size: 12px;
+          clear: both;
+        }
       "))
     )
   ),
 
 
-  nav_panel("Data Import", dataset_import_ui("dataset_import")),
-  nav_panel("Site Selection", site_selection_ui("site_selection")),
-  nav_panel("Daily Data", daily_data_ui("daily_data")),
-  nav_panel("Monthly Data", monthly_data_ui("monthly_data")),
-  nav_panel("Annual Data", annual_data_ui("annual_data")),
-  nav_panel("MOPEX Data", mopex_data_ui("mopex_data")),
-  nav_panel("Attributes", attributes_data_ui("attributes_data")),
-  nav_panel("Land Cover", landcover_data_ui("landcover_data")),
+ nav_panel("Data Import", 
+            tags$div(
+              class = "panel-wrapper",
+              dataset_import_ui("dataset_import"),
+              tags$div(
+                class = "panel-footer",
+                HTML("<span>MACH Explorer | Developed by Katharine Sink | © 2024-2025</span>")
+              )
+            )
+  ),
+ 
+  nav_panel("Site Selection", 
+             tags$div(
+              class = "panel-wrapper",
+              site_selection_ui("site_selection"),
+              tags$div(
+                class = "panel-footer",
+                HTML("<span>MACH Explorer | Developed by Katharine Sink | © 2024-2025</span>")
+              )
+            )
+  ),
+ 
+ nav_panel("Daily Data", 
+             tags$div(
+              class = "panel-wrapper",
+              daily_data_ui("daily_data"),
+              tags$div(
+                class = "panel-footer",
+                HTML("<span>MACH Explorer | Developed by Katharine Sink | © 2024-2025</span>")
+              )
+            )
+  ),
+ 
+  nav_panel("Monthly Data", 
+             tags$div(
+              class = "panel-wrapper",
+              monthly_data_ui("monthly_data"),
+              tags$div(
+                class = "panel-footer",
+                HTML("<span>MACH Explorer | Developed by Katharine Sink | © 2024-2025</span>")
+              )
+            )
+  ),
+ 
+   nav_panel("Annual Data", 
+             tags$div(
+              class = "panel-wrapper",
+              annual_data_ui("annual_data"),
+              tags$div(
+                class = "panel-footer",
+                HTML("<span>MACH Explorer | Developed by Katharine Sink | © 2024-2025</span>")
+              )
+            )
+  ),
+ 
+   nav_panel("MOPEX Data", 
+             tags$div(
+              class = "panel-wrapper",
+              mopex_data_ui("mopex_data"),
+              tags$div(
+                class = "panel-footer",
+                HTML("<span>MACH Explorer | Developed by Katharine Sink | © 2024-2025</span>")
+              )
+            )
+  ),
+ 
+   nav_panel("Attributes", 
+             tags$div(
+              class = "panel-wrapper",
+              attributes_data_ui("attributes_data"),
+              tags$div(
+                class = "panel-footer",
+                HTML("<span>MACH Explorer | Developed by Katharine Sink | © 2024-2025</span>")
+              )
+            )
+  ),
+ 
+   nav_panel("Land Cover", 
+             tags$div(
+              class = "panel-wrapper",
+              landcover_data_ui("landcover_data"),
+              tags$div(
+                class = "panel-footer",
+                HTML("<span>MACH Explorer | Developed by Katharine Sink | © 2024-2025</span>")
+              )
+            )
+  ),
 
 
   nav_spacer(),
@@ -123,11 +220,10 @@ ui <- bslib::page_navbar(
   nav_menu(
     title = "Help",
     align = "right",
-    nav_item("Coming soon…")
-  ) 
-  
+    nav_item(tags$a(href = "https://github.com/k-sink/MACHexplorer/", "Documentation and Support", target = "_blank"))
+  )
 )
-
+ 
 
 ### server setup ###
 server <- function(input, output, session) {
