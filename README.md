@@ -10,23 +10,46 @@ consist with the MOPEX and CAMELS datasets, based on USGS stream gauging station
 
 ## Installation
 1. Download the `MACH_Explorer_Installer.exe` from the [GitHub releases page](https://github.com/k-sink/MACHexplorer/releases).
-2. Run the installer and follow the on-screen instructions.
+2. Run the installer and follow the on-screen instructions. 
 3. The app will be installed to `%LocalAppData%\MACH Explorer App`.
+
+Launch the installer to begin setup. Click "Next" to install in default location. 
+
+<img width="497" height="395" alt="Image" src="https://github.com/user-attachments/assets/61f5a220-5147-4147-9a33-593e77b03835" /> 
+<br></br>
+
+Click in the checkbox next to the "Create a desktop shortcut" if you want to create one, then click "Next". 
+
+<img width="504" height="390" alt="Image" src="https://github.com/user-attachments/assets/9db1275c-d043-43b3-8454-5c818ec42907" />
+<br></br>
+
+The application is ready to install. Confirm the folder location and additional tasks, then click "Install". 
+
+<img width="496" height="391" alt="Image" src="https://github.com/user-attachments/assets/a97c5ec7-d961-47e3-a855-ec97e6a1bcaa" />
+<br></br>
+
+The application includes a portable R and portable Chrome browser, creating a self-contained Shiny executable. Click "Finish" to exit the setup. MACH Explorer is now ready! 
+
+<img width="502" height="395" alt="Image" src="https://github.com/user-attachments/assets/0a119881-4e94-4d53-9178-cf16da81399b" />
+<br></br>
 
 ## Requirements
 - Windows operating system.
 - No additional software required (includes portable R and Chrome).
+- Approximately 1.02 GB total. 
 
 ## Support
 - Report issues or suggest features at [https://github.com/k-sink/MACHexplorer/](https://github.com/k-sink/MACHexplorer/).
 - Contact: katharine.sink@utdallas.edu
+<br></br>
+Please note that I am not a software developer ... just a doctoral student who created an app. 😺
 
 ## License
 This project is licensed under the MIT License - see the `LICENSE` file for details.
 
 ## Usage
 To start the MACH Explorer, locate the installation directory and double-click `run.bat` or double-click the desktop shortcut if you elected to create one during app installation. 
-- **What You’ll See**: When you run `run.bat`, a black Command Prompt window will appear with a message like "Listening..." (*Figure 1*). This indicates that the app is starting and preparing to display its interface. The window must remain open for the app to work.
+- **What You’ll See**: When you run `run.bat`, a black Command Prompt window will appear with a message like "Listening..." (*Figure 1*). This indicates that the app is starting and preparing to display its interface. You do not need to do anything in the window. The window must remain open for the app to work.
 - **Browser Opening**: After a moment, the app will open in a web browser window (using a built-in Chrome instance). You can begin using the app from there.
 - **Keeping the Command Window Open**: Do not close the Command Prompt window while using the app, as this will stop the app. To exit, simply close the browser window or click the "Stop" button if provided, then close the Command Prompt window.
 - **Troubleshooting**: If the browser doesn’t open or the "Listening..." message doesn’t appear, ensure all files are correctly installed and try running `run.bat` again. Check the Command Prompt for any error messages if issues persist.
