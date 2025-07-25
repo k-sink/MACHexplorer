@@ -307,7 +307,6 @@ The **Land Cover** tab retrieves land cover data for the selected sites (*Figure
 The MACH Explorer uses data and software downloaded from the following sources:
 - **R**: [The R Project for Statistical Computing](https://www.r-project.org/) version 4.3.3. (Angel Food Cake). 
 - **Chrome**: [Google Chrome Portable](https://portableapps.com/apps/internet/google_chrome_portable).
-- **QGIS**: [QGIS](https://qgis.org/). 
 - **Daymet**: [Daymet Version 4](https://daymet.ornl.gov/) - climate variables (precipitation, minimum air temperature, maximum air temperature, snow water equivalent, vapor pressure, solar radiation, day length) for January 1, 1980 to December 31, 2023.
 - **GLEAM4**: [Global Land Evaporation Amsterdam Model](https://www.gleam.eu/) - climate variables (actual evapotranspiration, potential evapotranspiration) for January 1, 1980 to December 31, 2023.
 - **MOPEX**: [Model Parameter Estimation Experiment](https://doi.org/10.1016/j.jhydrol.2005.07.054) - climate variables (precipitation, minimum air temperature, maximum air temperature), streamflow for January 1, 1948 to December 31, 1979.
