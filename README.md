@@ -307,12 +307,14 @@ The **Land Cover** tab retrieves land cover data for the selected sites (*Figure
 The MACH Explorer uses data and software downloaded from the following sources:
 - **R**: [The R Project for Statistical Computing](https://www.r-project.org/) version 4.3.3. (Angel Food Cake). 
 - **Chrome**: [Google Chrome Portable](https://portableapps.com/apps/internet/google_chrome_portable).
+- **QGIS**: [QGIS](https://qgis.org/). 
 - **Daymet**: [Daymet Version 4](https://daymet.ornl.gov/) - climate variables (precipitation, minimum air temperature, maximum air temperature, snow water equivalent, vapor pressure, solar radiation, day length) for January 1, 1980 to December 31, 2023.
 - **GLEAM4**: [Global Land Evaporation Amsterdam Model](https://www.gleam.eu/) - climate variables (actual evapotranspiration, potential evapotranspiration) for January 1, 1980 to December 31, 2023.
 - **MOPEX**: [Model Parameter Estimation Experiment](https://doi.org/10.1016/j.jhydrol.2005.07.054) - climate variables (precipitation, minimum air temperature, maximum air temperature), streamflow for January 1, 1948 to December 31, 1979.
 - **USGS NWIS**: [United States Geological Survey National Water Information System](https://waterdata.usgs.gov/nwis/rt) - streamflow data January 1, 1980 to December 31, 2023.
 - **NHDPlus Version 2.1**: [National Hydrography Dataset](https://www.sciencebase.gov/catalog/item/5669a79ee4b08895842a1d47) - catchment attributes.
 - **MRLC**: [Multi-Resolution Land Characteristics Consortium](https://www.mrlc.gov/) - land cover.
-- **NID**: [US Army Corps of Engineers National Inventory of Dams](https://nid.sec.usace.army.mil/#/) - dam attributes. 
+- **NID**: [US Army Corps of Engineers National Inventory of Dams](https://nid.sec.usace.army.mil/#/) - dam attributes.
+- **NRCS**: [Web Soil Survey](https://websoilsurvey.nrcs.usda.gov/app/WebSoilSurvey.aspx) - soil attributes. 
 
 - **MACH**: https://zenodo.org/records/16414465
