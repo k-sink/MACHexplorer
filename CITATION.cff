@@ -5,7 +5,7 @@ authors:
     given-names: "Katharine"
     orcid: "https://orcid.org/0009-0004-4610-4064"
 title: "MACHexplorer"
-version: 1.0.0
+version: 1.0
 doi: 10.5281/zenodo.16585881
 date-released: 2025-07-29
 url: "https://github.com/k-sink/MACHexplorer"
