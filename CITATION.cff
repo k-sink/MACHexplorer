@@ -1,11 +1,11 @@
-cff-version: 1.0
+cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
-authors:
+author:
 - family-names: "Sink"
   given-names: "Katharine"
   orcid: "https://orcid.org/0009-0004-4610-4064"
-title: "MACH Explorer"
-version: 1.0
+title: "MACHexplorer"
+version: 1.0.0
 doi: 10.5281/zenodo.16585881
 date-released: 2025-07-29
 url: "https://github.com/k-sink/MACHexplorer"
