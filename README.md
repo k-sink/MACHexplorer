@@ -41,7 +41,7 @@ The application includes a portable R and portable Chrome browser, creating a se
 - Report issues or suggest features at [https://github.com/k-sink/MACHexplorer/](https://github.com/k-sink/MACHexplorer/).
 - Contact: katharine.sink@utdallas.edu
 <br></br>
-Please note that I am not a software developer ... just a doctoral student who created an app. 😺
+Please note that I am not a software developer ... just a doctoral student who created an awesome app. 😺
 
 ## License
 This project is licensed under the MIT License - see the `LICENSE` file for details.
@@ -316,5 +316,4 @@ The MACH Explorer uses data and software downloaded from the following sources:
 - **MRLC**: [Multi-Resolution Land Characteristics Consortium](https://www.mrlc.gov/) - land cover.
 - **NID**: [US Army Corps of Engineers National Inventory of Dams](https://nid.sec.usace.army.mil/#/) - dam attributes.
 - **NRCS**: [Web Soil Survey](https://websoilsurvey.nrcs.usda.gov/app/WebSoilSurvey.aspx) - soil attributes. 
-
-- **MACH**: https://zenodo.org/records/16414465
+- **MACH**: https://zenodo.org/records/16414465 (Katharine Sink, 2025). 
