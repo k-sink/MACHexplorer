@@ -1,11 +1,15 @@
 # MACH Explorer 
 
 ## Overview
-The **MACH Explorer** is a desktop application that enables users to evaluate and manipulate the **MACH** dataset (Sink, 2025). Developed by Katharine Sink, it leverages [Shiny](https://shiny.posit.co/) 
-for an interactive interface. The **MACH** dataset is available at [zenodo](https://zenodo.org/records/16423231). This dataset contains daily climate data along with catchment attributes for 1,014 watersheds within the United States. Climate forcing data includes precipitation, minimum air temperature, maximum air temperature, mean air temperature, snow water equivalent, shortwave radiation, water vapor pressure, day length, potential evapotranspiration, and actual evapotranspiration. 
-Hydrological data includes daily observed streamflow. Data coverage spans from January 1, 1980 to December 31, 2023. Catchment attribute categories are land cover, hydrology, geology, soil, regional, climate indices, 
-and anthropogenic. MOPEX data is also included for 395 of the watersheds for January 1, 1948 to December 31, 1979 for precipitation, minimum and maximum air temperature, and observed streamflow. Basin identifiers are 
-consist with the MOPEX and CAMELS datasets, based on USGS stream gauging stations.  
+The **MACH Explorer** is a desktop application that enables users to evaluate and manipulate the **MACH** dataset (Sink, 2025). 
+Developed by Katharine Sink, **MACH Explorer** leverages [Shiny](https://shiny.posit.co/) for an interactive interface. The **MACH** dataset is available at [zenodo](https://zenodo.org/records/16423231). **MACH** contains 
+daily climate data along with catchment attributes for 1,014 watersheds within the United States. Climate forcing data includes precipitation, minimum air temperature, maximum air temperature, mean air temperature, 
+snow water equivalent, shortwave radiation, water vapor pressure, day length, potential evapotranspiration, and actual evapotranspiration. Hydrological data includes daily observed streamflow. Data coverage spans 
+from January 1, 1980 to December 31, 2023. Catchment attribute categories are land cover, hydrology, geology, soil, regional, climate indices, and anthropogenic. MOPEX data is also included for 395 of the 
+watersheds for January 1, 1948 to December 31, 1979 for precipitation, minimum and maximum air temperature, and observed streamflow. Basin identifiers are consist with the MOPEX and CAMELS datasets, based on USGS stream gauging stations.  
+This repository contains the **MACH Explorer** executable and the _full_dataset.duckdb_ database file under **Releases**. 
+
+If you use this software, please cite: Katharine Sink. (2025). k-sink/MACHexplorer: MACH Explorer version 1.0 (v1.0-machexplorer). Zenodo. https://doi.org/10.5281/zenodo.16585881
 
 ## Installation
 1. Download the `MACH_Explorer_Installer.exe` from the [GitHub releases page](https://github.com/k-sink/MACHexplorer/releases).
