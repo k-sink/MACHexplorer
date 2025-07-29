@@ -41,7 +41,7 @@ The application includes a portable R and portable Chrome browser, creating a se
 - Report issues or suggest features at [https://github.com/k-sink/MACHexplorer/](https://github.com/k-sink/MACHexplorer/).
 - Contact: katharine.sink@utdallas.edu
 <br></br>
-Please note that I am not a software developer ... just a doctoral student who created an awesome app. 😺
+Please note that I am not a software developer ... just a doctoral student who created an app. 😺
 
 ## License
 This project is licensed under the MIT License - see the `LICENSE` file for details.
