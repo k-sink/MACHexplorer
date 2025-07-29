@@ -1,13 +1,12 @@
 # MACH Explorer 
 
 ## Overview
-The **MACH Explorer** is a desktop application that enables users to evaluate and manipulate the **MACH** dataset (Sink, 2025). 
-Developed by Katharine Sink, **MACH Explorer** leverages [Shiny](https://shiny.posit.co/) for an interactive interface. The **MACH** dataset is available at [zenodo](https://zenodo.org/records/16423231). **MACH** contains 
-daily climate data along with catchment attributes for 1,014 watersheds within the United States. Climate forcing data includes precipitation, minimum air temperature, maximum air temperature, mean air temperature, 
-snow water equivalent, shortwave radiation, water vapor pressure, day length, potential evapotranspiration, and actual evapotranspiration. Hydrological data includes daily observed streamflow. Data coverage spans 
-from January 1, 1980 to December 31, 2023. Catchment attribute categories are land cover, hydrology, geology, soil, regional, climate indices, and anthropogenic. MOPEX data is also included for 395 of the 
-watersheds for January 1, 1948 to December 31, 1979 for precipitation, minimum and maximum air temperature, and observed streamflow. Basin identifiers are consist with the MOPEX and CAMELS datasets, based on USGS stream gauging stations.  This repository 
-contains the **MACH Explorer** executable and the _full_dataset.duckdb_ database file under **Releases**. 
+Developed by Katharine Sink, **MACH Explorer** leverages [Shiny](https://shiny.posit.co/) for an interactive interface to evaluate and manipulate the **MACH** dataset (Sink, 2025). 
+The **MACH** dataset encompasses hydrometeorological and attribute data for 1,014 watersheds. **MACH Explorer** simplifies data access by offering a dynamic interface that enables users to filter and extract data with precision, based on a suite of temporal and spatial criteria. The app’s interface is enriched with multiple specialized tabs, each designed to enhance data interaction and retrieval. These components allow users to visualize data, assess watershed attributes, and integrate aspects of the diverse dataset seamlessly. A standout feature is the ability to preview data subsets and export them as CSV files, significantly reducing the barrier to entry for users unfamiliar with programmatic data processing. At the core of the MACH Explorer lies a robust DuckDB database management system file, *full_dataset.duckdb*, which consolidates MACH time series data (1980-2023), MOPEX time series data (1948-1979), and catchment attributes for 1,014 basins. This database integrates daily hydrometeorological variables and attributes into a unified, query-efficient structure
+The MACH Explorer leverages a portable R environment, encapsulating all necessary R dependencies and packages within a self-contained executable, eliminating the need for users to install or configure R independently. This portability ensures consistent performance across different systems. Complementing this, a bundled portable Chrome instance serves as the rendering engine, delivering a seamless, browser-based interface that mirrors the functionality of a native application. This combination of portable R and Chrome, integrated through a custom R script, represents a lightweight yet powerful solution that enhances accessibility while maintaining computational efficiency. 
+
+This repository contains the *MACH_Explorer_Installer.exe* executable and the _full_dataset.duckdb_ database file under [Releases](https://github.com/k-sink/MACHexplorer/releases). The DuckDB file was created from **MACH** data to streamline app efficiency. 
+The **MACH** dataset CSV files are separately available for download at [zenodo](https://zenodo.org/records/16423231). 
 
 If you use this software, please cite: Katharine Sink. (2025). k-sink/MACHexplorer: MACH Explorer version 1.0 (v1.0-machexplorer). Zenodo. https://doi.org/10.5281/zenodo.16585881
 
@@ -42,7 +41,7 @@ The application includes a portable R and portable Chrome browser, creating a se
 - Approximately 1.02 GB total. 
 
 ## Support
-- Report issues or suggest features at [https://github.com/k-sink/MACHexplorer/](https://github.com/k-sink/MACHexplorer/).
+- Report issues or suggest features at [https://github.com/k-sink/MACHexplorer/](https://github.com/k-sink/MACHexplorer/issues).
 - Contact: katharine.sink@utdallas.edu
 <br></br>
 Please note that I am not a software developer ... just a doctoral student who created an app. 😺
