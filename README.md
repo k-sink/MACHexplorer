@@ -293,7 +293,7 @@ The *Annual Value per Site* option pertains to climate attributes calculated usi
 
 <img width="1286" height="544" alt="Image" src="https://github.com/user-attachments/assets/8be8e5b2-1850-4a71-85f4-13e61c395fd1" />
 
-<i>Figure 29: Monthly value per site for monthly climate attributes.</i>
+<i>Figure 29: Annual value per site for annual climate attributes.</i>
 <br></br>
 
 The **"Download Attributes"** option name will change based on the attribute type selection. All export buttons will download a single csv file that resembles the table output shown in the dashboard. The file naming convention is MACH_att_YYYY_MM_DD.csv for overall site attributes, MACH_monthly_att_YYYY_MM_DD.csv for monthly attributes, and MACH_annual_att_YYYY_MM_DD.csv for annual attributes. 
