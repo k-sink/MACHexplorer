@@ -203,7 +203,7 @@ The **Monthly Data** tab contains all climate variables and temporal filters. Ra
 Data can also be filtered by *Calendar Year* and/or *Month* under *"Select Time Period(s)"* as shown in *Figure 18*. The **"Filtered Monthly Data"** table will show all data returned and includes SITENO, YEAR, and MONTH columns along with any selected variables. These columns are what will be returned in downloaded monthly data csv files. 
 
 <img width="994" height="718" alt="Image" src="https://github.com/user-attachments/assets/8f222f81-058d-4fa2-9637-c339b679304a" />
-<i>Figure 18: Monthly data tabe with statistic options, variables, temporal filters, and table display.</i>
+<i>Figure 18: Monthly data table with statistic options, variables, temporal filters, and table display.</i>
 <br></br>
 
 
